@@ -91,6 +91,9 @@ class FlowDeskApiClient(private val context: Context) {
     suspend fun getTodayTasks(date: String): List<Task> =
         executeGet("/api/v1/tasks?date=$date")
 
+    suspend fun createTask(task: Task): Map<String, Any> =
+        executePost("/api/v1/tasks", task)
+
     suspend fun updateTaskStatus(id: String, status: String): Map<String, Any> =
         executePost("/api/v1/tasks/$id/status", mapOf("status" to status))
 

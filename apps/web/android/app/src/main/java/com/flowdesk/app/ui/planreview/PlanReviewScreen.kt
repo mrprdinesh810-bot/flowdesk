@@ -1,3 +1,4 @@
+
 package com.flowdesk.app.ui.planreview
 
 import androidx.compose.foundation.background
@@ -37,43 +38,7 @@ fun PlanReviewScreen(
     val feasibility by repository.feasibility.collectAsState()
     var isFixing by remember { mutableStateOf(false) }
 
-    val candidates = candidateList.ifEmpty {
-        listOf(
-            Candidate(
-                id = "c1",
-                title = "Study EDC & Small Signal Analysis",
-                priority = "P1",
-                estimatedDuration = 90,
-                scheduledStart = "14:30",
-                scheduledEnd = "16:00",
-                category = "Deep Work",
-                expectedOutcome = "Complete problem sets on diode and transistor bias",
-                isIncluded = 1
-            ),
-            Candidate(
-                id = "c2",
-                title = "Telemetry Sync & Systems QA Call",
-                priority = "P2",
-                estimatedDuration = 45,
-                scheduledStart = "16:15",
-                scheduledEnd = "17:00",
-                category = "Coordination",
-                expectedOutcome = "Verify sensor telemetry throughput",
-                isIncluded = 1
-            ),
-            Candidate(
-                id = "c3",
-                title = "Firmware Flash v2.1 & Bootloader Diagnostic",
-                priority = "P2",
-                estimatedDuration = 60,
-                scheduledStart = "17:15",
-                scheduledEnd = "18:15",
-                category = "Engineering",
-                expectedOutcome = "Flash patched hex image",
-                isIncluded = 1
-            )
-        )
-    }
+    val candidates = candidateList
 
     val activeCandidates = candidates.filter { it.isIncluded == 1 }
     val totalEstimatedMinutes = activeCandidates.sumOf { it.estimatedDuration }
@@ -201,14 +166,18 @@ fun PlanReviewScreen(
                     Box(modifier = Modifier.size(8.dp).background(StatusEmerald, CircleShape))
                     Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
                         Text(
-                            text = "AI REASONING: BALANCED COGNITIVE LOAD",
+                            text = "DETERMINISTIC ENGINE: ${feasibility?.status?.uppercase() ?: "BALANCED SCHEDULE"}",
                             fontFamily = FontFamily.Monospace,
                             fontSize = 10.sp,
                             fontWeight = FontWeight.Bold,
                             color = StatusEmerald
                         )
                         Text(
-                            text = "High-complexity tasks (P1 EDC) allocated to peak daylight window. 1h 45m dynamic buffer preserved for breaks.",
+                            text = if (feasibility != null) {
+                                "${activeCandidates.size} tasks planned (${feasibility?.plannedMinutes ?: totalEstimatedMinutes}m). ${feasibility?.bufferMinutes ?: 0}m buffer reserved (15% safety margin)."
+                            } else {
+                                "Candidates sequenced by priority with conflict-free slotting and safety buffer."
+                            },
                             fontSize = 11.sp,
                             color = AerospaceSlate
                         )
@@ -217,15 +186,54 @@ fun PlanReviewScreen(
             }
 
             // Proposed Candidates List
-            item {
-                Text(
-                    text = "PROPOSED TIMELINE NODES",
-                    fontFamily = FontFamily.Monospace,
-                    fontSize = 11.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = TechMuted,
-                    letterSpacing = 0.5.sp
-                )
+            if (candidates.isEmpty()) {
+                item {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clip(RoundedCornerShape(16.dp))
+                            .background(CardSurface)
+                            .border(1.dp, GlacierBorder, RoundedCornerShape(16.dp))
+                            .padding(24.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Outlined.Info,
+                                contentDescription = null,
+                                tint = TechMuted,
+                                modifier = Modifier.size(32.dp)
+                            )
+                            Text(
+                                text = "NO PROPOSED PLAN NODES",
+                                fontFamily = FontFamily.Monospace,
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 12.sp,
+                                color = AerospaceNavy
+                            )
+                            Text(
+                                text = "Submit a Brain Dump to parse actionable items and construct a practical schedule.",
+                                fontSize = 12.sp,
+                                color = TechMuted,
+                                textAlign = androidx.compose.ui.text.style.TextAlign.Center
+                            )
+                        }
+                    }
+                }
+            } else {
+                item {
+                    Text(
+                        text = "PROPOSED TIMELINE NODES",
+                        fontFamily = FontFamily.Monospace,
+                        fontSize = 11.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = TechMuted,
+                        letterSpacing = 0.5.sp
+                    )
+                }
             }
 
             items(candidates, key = { it.id }) { cand ->
@@ -322,39 +330,62 @@ fun PlanReviewScreen(
             }
         }
 
-        // Primary Approve Action Button
-        Button(
-            onClick = {
-                isFixing = true
-                coroutineScope.launch {
-                    repository.fixPlan()
-                    isFixing = false
-                    onPlanFixed()
+        // Primary Action Button
+        if (candidates.isNotEmpty()) {
+            Button(
+                onClick = {
+                    isFixing = true
+                    coroutineScope.launch {
+                        repository.fixPlan()
+                        isFixing = false
+                        onPlanFixed()
+                    }
+                },
+                enabled = !isFixing,
+                colors = ButtonDefaults.buttonColors(containerColor = ElectricCobalt),
+                shape = RoundedCornerShape(14.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(52.dp)
+            ) {
+                if (isFixing) {
+                    CircularProgressIndicator(modifier = Modifier.size(18.dp), color = Color.White, strokeWidth = 2.dp)
+                } else {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        Box(modifier = Modifier.size(18.dp).background(Color.White.copy(alpha = 0.2f), CircleShape), contentAlignment = Alignment.Center) {
+                            Text("✓", color = Color.White, fontSize = 11.sp, fontWeight = FontWeight.Bold)
+                        }
+                        Text(
+                            text = "APPROVE PLAN // LOCK SCHEDULE (${activeCandidates.size})",
+                            fontFamily = FontFamily.Monospace,
+                            fontWeight = FontWeight.Black,
+                            fontSize = 12.sp,
+                            letterSpacing = 0.5.sp
+                        )
+                    }
                 }
-            },
-            enabled = !isFixing,
-            colors = ButtonDefaults.buttonColors(containerColor = ElectricCobalt),
-            shape = RoundedCornerShape(14.dp),
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(52.dp)
-        ) {
-            if (isFixing) {
-                CircularProgressIndicator(modifier = Modifier.size(18.dp), color = Color.White, strokeWidth = 2.dp)
-            } else {
+            }
+        } else {
+            OutlinedButton(
+                onClick = onNavigateBack,
+                shape = RoundedCornerShape(14.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(52.dp)
+            ) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    Box(modifier = Modifier.size(18.dp).background(Color.White.copy(alpha = 0.2f), CircleShape), contentAlignment = Alignment.Center) {
-                        Text("✓", color = Color.White, fontSize = 11.sp, fontWeight = FontWeight.Bold)
-                    }
+                    Icon(Icons.Outlined.ArrowBack, contentDescription = null, modifier = Modifier.size(18.dp))
                     Text(
-                        text = "APPROVE PLAN // LOCK SCHEDULE",
+                        text = "RETURN TO DASHBOARD",
                         fontFamily = FontFamily.Monospace,
-                        fontWeight = FontWeight.Black,
-                        fontSize = 12.sp,
-                        letterSpacing = 0.5.sp
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 11.sp
                     )
                 }
             }

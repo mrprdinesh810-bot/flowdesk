@@ -41,12 +41,12 @@ fun TodayDashboardScreen(
     val todayTasks by repository.todayTasks.collectAsState()
     val activeTimer by repository.activeTimer.collectAsState()
     val feasibility by repository.feasibility.collectAsState()
+    val settings by repository.settings.collectAsState()
 
     var selectedTaskForDetails by remember { mutableStateOf<Task?>(null) }
 
     LaunchedEffect(Unit) {
         repository.refreshTodayTasks()
-        repository.refreshActiveTimer()
     }
 
     val activeTaskId = activeTimer.task_id
@@ -65,6 +65,19 @@ fun TodayDashboardScreen(
         SimpleDateFormat("HH:mm", Locale.getDefault()).format(Date())
     }
 
+    val providerBeaconText = when (settings.selectedProvider) {
+        "openrouter" -> if (repository.isOpenRouterConfigured()) "OPENROUTER • DIRECT CLOUD" else "OPENROUTER • KEY NEEDED"
+        "flowdesk_server" -> "FLOWDESK SERVER • REMOTE"
+        "on_device" -> "ON-DEVICE • PREPARED"
+        else -> "LOCAL ROOM DB • PERSISTENT"
+    }
+    val providerDotColor = when {
+        settings.selectedProvider == "openrouter" && repository.isOpenRouterConfigured() -> StatusEmerald
+        settings.selectedProvider == "openrouter" && !repository.isOpenRouterConfigured() -> StateWarning
+        settings.selectedProvider == "flowdesk_server" -> ElectricCobalt
+        else -> ArcticCyan
+    }
+
     LazyColumn(
         modifier = modifier
             .fillMaxSize()
@@ -81,7 +94,7 @@ fun TodayDashboardScreen(
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    // Local AI Beacon Pill
+                    // Dynamic AI Beacon Pill
                     Row(
                         modifier = Modifier
                             .clip(RoundedCornerShape(9999.dp))
@@ -94,10 +107,10 @@ fun TodayDashboardScreen(
                         Box(
                             modifier = Modifier
                                 .size(7.dp)
-                                .background(ArcticCyan, CircleShape)
+                                .background(providerDotColor, CircleShape)
                         )
                         Text(
-                            text = "OLLAMA 3.2 • LOCAL RUNTIME",
+                            text = providerBeaconText,
                             fontFamily = FontFamily.Monospace,
                             fontSize = 10.sp,
                             fontWeight = FontWeight.Bold,
@@ -407,6 +420,7 @@ fun TodayDashboardScreen(
                     }
                 } else {
                     // Empty Focus State
+                    val isAllDone = todayTasks.isNotEmpty() && todayTasks.all { it.status == "completed" }
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -417,8 +431,18 @@ fun TodayDashboardScreen(
                         contentAlignment = Alignment.Center
                     ) {
                         Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                            Text("ALL MAIN OBJECTIVES COMPLETED", fontFamily = FontFamily.Monospace, fontWeight = FontWeight.Bold, fontSize = 12.sp, color = StatusEmerald)
-                            Text("Ready for daily wrap-up or capture thoughts in Brain Dump.", fontSize = 12.sp, color = TechMuted)
+                            Text(
+                                text = if (isAllDone) "ALL OBJECTIVES COMPLETED ✓" else "NO TASKS SCHEDULED TODAY",
+                                fontFamily = FontFamily.Monospace,
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 12.sp,
+                                color = if (isAllDone) StatusEmerald else AerospaceSlate
+                            )
+                            Text(
+                                text = if (isAllDone) "Ready for daily wrap-up or capture new thoughts in Brain Dump." else "Tap (+) to create a task node or capture messy thoughts in Brain Dump.",
+                                fontSize = 12.sp,
+                                color = TechMuted
+                            )
                         }
                     }
                 }

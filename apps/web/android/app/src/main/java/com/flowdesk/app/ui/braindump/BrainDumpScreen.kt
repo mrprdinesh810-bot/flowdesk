@@ -41,16 +41,27 @@ fun BrainDumpScreen(
         isProcessing = true
         errorMessage = null
         coroutineScope.launch {
-            try {
-                repository.parseBrainDump(rawText, "ai", settings.selectedProvider)
+            val result = repository.parseBrainDump(rawText)
+            isProcessing = false
+            if (result.isSuccess) {
                 onNavigateToPipeline()
-            } catch (e: Exception) {
-                errorMessage = e.message ?: "Parsing failed. Defaulting to local parser."
-                onNavigateToPipeline()
-            } finally {
-                isProcessing = false
+            } else {
+                errorMessage = result.exceptionOrNull()?.message ?: "AI parsing failed. Please verify provider configuration in Settings."
             }
         }
+    }
+
+    val providerBadgeText = when (settings.selectedProvider) {
+        "openrouter" -> if (repository.isOpenRouterConfigured()) "OPENROUTER • DIRECT CLOUD" else "OPENROUTER • KEY REQUIRED"
+        "flowdesk_server" -> "FLOWDESK SERVER • REMOTE"
+        "on_device" -> "ON-DEVICE • PREPARED"
+        else -> "AI ENGINE STANDBY"
+    }
+    val providerDotColor = when {
+        settings.selectedProvider == "openrouter" && repository.isOpenRouterConfigured() -> StatusEmerald
+        settings.selectedProvider == "openrouter" && !repository.isOpenRouterConfigured() -> StateWarning
+        settings.selectedProvider == "flowdesk_server" -> ElectricCobalt
+        else -> ArcticCyan
     }
 
     LazyColumn(
@@ -90,9 +101,9 @@ fun BrainDumpScreen(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(6.dp)
                 ) {
-                    Box(modifier = Modifier.size(6.dp).background(ArcticCyan, CircleShape))
+                    Box(modifier = Modifier.size(6.dp).background(providerDotColor, CircleShape))
                     Text(
-                        text = "OLLAMA 3.2 • ZERO CLOUD",
+                        text = providerBadgeText,
                         fontFamily = FontFamily.Monospace,
                         fontSize = 10.sp,
                         fontWeight = FontWeight.Bold,
@@ -253,6 +264,40 @@ fun BrainDumpScreen(
                         }
                     }
                 }
+
+                // Error Message Card if parsing failed
+                errorMessage?.let { msg ->
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clip(RoundedCornerShape(12.dp))
+                            .background(P1Bg)
+                            .border(1.dp, P1Border, RoundedCornerShape(12.dp))
+                            .padding(12.dp)
+                    ) {
+                        Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                                Box(modifier = Modifier.size(6.dp).background(P1Red, CircleShape))
+                                Text("AI PARSING FAILED", fontFamily = FontFamily.Monospace, fontSize = 10.sp, fontWeight = FontWeight.Bold, color = P1Red)
+                            }
+                            Text(text = msg, fontSize = 12.sp, color = AerospaceNavy)
+                        }
+                    }
+                }
+
+                // Privacy Indication Notice
+                val privacyNotice = when (settings.selectedProvider) {
+                    "openrouter" -> "Privacy: Stream will be sent directly to OpenRouter via HTTPS."
+                    "flowdesk_server" -> "Privacy: Stream will be processed on your local FlowDesk server."
+                    else -> "Privacy: On-device inference runtime."
+                }
+                Text(
+                    text = privacyNotice,
+                    fontFamily = FontFamily.Monospace,
+                    fontSize = 9.sp,
+                    color = TechMuted,
+                    modifier = Modifier.align(Alignment.CenterHorizontally)
+                )
             }
         }
     }

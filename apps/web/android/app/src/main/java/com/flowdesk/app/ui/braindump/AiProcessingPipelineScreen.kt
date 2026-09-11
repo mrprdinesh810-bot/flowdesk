@@ -61,46 +61,7 @@ fun AiProcessingPipelineScreen(
         }
     }
 
-    val candidates = candidateList.ifEmpty {
-        listOf(
-            Candidate(
-                id = "c1",
-                title = "Study EDC & Small Signal Analysis",
-                priority = "P1",
-                estimatedDuration = 90,
-                scheduledStart = "15:00",
-                scheduledEnd = "16:30",
-                category = "Task",
-                isIncluded = 1
-            ),
-            Candidate(
-                id = "c2",
-                title = "TRAKAE Parser Implementation",
-                priority = "P2",
-                estimatedDuration = 45,
-                scheduledStart = "16:45",
-                scheduledEnd = "17:30",
-                category = "Task",
-                isIncluded = 1
-            ),
-            Candidate(
-                id = "c3",
-                title = "Investigate async DMA buffer transfer for lower latency",
-                priority = "P3",
-                estimatedDuration = 30,
-                category = "Idea",
-                isIncluded = 0
-            ),
-            Candidate(
-                id = "c4",
-                title = "Calibrate lab oscilloscope voltage probe",
-                priority = "P2",
-                estimatedDuration = 15,
-                category = "Reminder",
-                isIncluded = 1
-            )
-        )
-    }
+    val candidates = candidateList
 
     val filteredCandidates = when (selectedCategoryFilter) {
         "Tasks" -> candidates.filter { it.category == "Task" }
@@ -246,54 +207,93 @@ fun AiProcessingPipelineScreen(
 
             // Extracted Entities Header & Filter Tabs
             if (isPipelineFinished) {
-                item {
-                    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            verticalAlignment = Alignment.CenterVertically
+                if (candidates.isEmpty()) {
+                    item {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clip(RoundedCornerShape(16.dp))
+                                .background(CardSurface)
+                                .border(1.dp, GlacierBorder, RoundedCornerShape(16.dp))
+                                .padding(24.dp),
+                            contentAlignment = Alignment.Center
                         ) {
-                            Text(
-                                text = "EXTRACTED NODES (${candidates.size})",
-                                fontFamily = FontFamily.Monospace,
-                                fontSize = 11.sp,
-                                fontWeight = FontWeight.Bold,
-                                color = TechMuted,
-                                letterSpacing = 0.5.sp
-                            )
-                            Text(
-                                text = "${candidates.count { it.isIncluded == 1 }} SELECTED",
-                                fontFamily = FontFamily.Monospace,
-                                fontSize = 10.sp,
-                                fontWeight = FontWeight.Bold,
-                                color = ElectricCobalt
-                            )
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.spacedBy(8.dp)
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Outlined.Info,
+                                    contentDescription = null,
+                                    tint = TechMuted,
+                                    modifier = Modifier.size(32.dp)
+                                )
+                                Text(
+                                    text = "NO ACTIONABLE NODES EXTRACTED",
+                                    fontFamily = FontFamily.Monospace,
+                                    fontWeight = FontWeight.Bold,
+                                    fontSize = 12.sp,
+                                    color = AerospaceNavy
+                                )
+                                Text(
+                                    text = "The AI provider did not extract any actionable tasks from the text. Return to Brain Dump and add more detail.",
+                                    fontSize = 12.sp,
+                                    color = TechMuted,
+                                    textAlign = androidx.compose.ui.text.style.TextAlign.Center
+                                )
+                            }
                         }
+                    }
+                } else {
+                    item {
+                        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Text(
+                                    text = "EXTRACTED NODES (${candidates.size})",
+                                    fontFamily = FontFamily.Monospace,
+                                    fontSize = 11.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = TechMuted,
+                                    letterSpacing = 0.5.sp
+                                )
+                                Text(
+                                    text = "${candidates.count { it.isIncluded == 1 }} SELECTED",
+                                    fontFamily = FontFamily.Monospace,
+                                    fontSize = 10.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = ElectricCobalt
+                                )
+                            }
 
-                        // Filter Pills (All, Tasks, Ideas, Reminders)
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.spacedBy(8.dp)
-                        ) {
-                            listOf("All", "Tasks", "Ideas", "Reminders").forEach { cat ->
-                                val isSel = selectedCategoryFilter == cat
-                                Box(
-                                    modifier = Modifier
-                                        .weight(1f)
-                                        .clip(RoundedCornerShape(8.dp))
-                                        .background(if (isSel) ElectricCobalt else CardSurface)
-                                        .border(1.dp, if (isSel) ElectricCobalt else GlacierBorder, RoundedCornerShape(8.dp))
-                                        .clickable { selectedCategoryFilter = cat }
-                                        .padding(vertical = 6.dp),
-                                    contentAlignment = Alignment.Center
-                                ) {
-                                    Text(
-                                        text = cat.uppercase(),
-                                        fontFamily = FontFamily.Monospace,
-                                        fontSize = 9.sp,
-                                        fontWeight = FontWeight.Bold,
-                                        color = if (isSel) Color.White else AerospaceNavy
-                                    )
+                            // Filter Pills (All, Tasks, Ideas, Reminders)
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                            ) {
+                                listOf("All", "Tasks", "Ideas", "Reminders").forEach { cat ->
+                                    val isSel = selectedCategoryFilter == cat
+                                    Box(
+                                        modifier = Modifier
+                                            .weight(1f)
+                                            .clip(RoundedCornerShape(8.dp))
+                                            .background(if (isSel) ElectricCobalt else CardSurface)
+                                            .border(1.dp, if (isSel) ElectricCobalt else GlacierBorder, RoundedCornerShape(8.dp))
+                                            .clickable { selectedCategoryFilter = cat }
+                                            .padding(vertical = 6.dp),
+                                        contentAlignment = Alignment.Center
+                                    ) {
+                                        Text(
+                                            text = cat.uppercase(),
+                                            fontFamily = FontFamily.Monospace,
+                                            fontSize = 9.sp,
+                                            fontWeight = FontWeight.Bold,
+                                            color = if (isSel) Color.White else AerospaceNavy
+                                        )
+                                    }
                                 }
                             }
                         }
@@ -396,33 +396,49 @@ fun AiProcessingPipelineScreen(
 
         // 3. Bottom Confirm & Add to Plan Dock
         if (isPipelineFinished) {
-            Button(
-                onClick = {
-                    coroutineScope.launch {
-                        repository.fixPlan()
-                        onPlanConfirmed()
-                    }
-                },
-                colors = ButtonDefaults.buttonColors(containerColor = ElectricCobalt),
-                shape = RoundedCornerShape(14.dp),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(52.dp)
-            ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+            if (candidates.isNotEmpty()) {
+                Button(
+                    onClick = onPlanConfirmed, // Navigates to PlanReviewScreen without premature fixPlan!
+                    colors = ButtonDefaults.buttonColors(containerColor = ElectricCobalt),
+                    shape = RoundedCornerShape(14.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(52.dp)
                 ) {
-                    Box(modifier = Modifier.size(18.dp).background(Color.White.copy(alpha = 0.2f), CircleShape), contentAlignment = Alignment.Center) {
-                        Text("✓", color = Color.White, fontSize = 11.sp, fontWeight = FontWeight.Bold)
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        Text(
+                            text = "PROCEED TO PLAN REVIEW (${candidates.count { it.isIncluded == 1 }})",
+                            fontFamily = FontFamily.Monospace,
+                            fontWeight = FontWeight.Black,
+                            fontSize = 12.sp,
+                            letterSpacing = 0.5.sp
+                        )
+                        Icon(Icons.Outlined.ArrowForward, contentDescription = null, modifier = Modifier.size(18.dp), tint = Color.White)
                     }
-                    Text(
-                        text = "CONFIRM & ADD TO PLAN",
-                        fontFamily = FontFamily.Monospace,
-                        fontWeight = FontWeight.Black,
-                        fontSize = 12.sp,
-                        letterSpacing = 0.5.sp
-                    )
+                }
+            } else {
+                OutlinedButton(
+                    onClick = onNavigateBack,
+                    shape = RoundedCornerShape(14.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(52.dp)
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        Icon(Icons.Outlined.ArrowBack, contentDescription = null, modifier = Modifier.size(18.dp))
+                        Text(
+                            text = "BACK TO BRAIN DUMP",
+                            fontFamily = FontFamily.Monospace,
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 11.sp
+                        )
+                    }
                 }
             }
         }

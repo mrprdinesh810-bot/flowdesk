@@ -297,7 +297,7 @@ private fun AppNavHost(
         composable(Screen.AI_PIPELINE.route) {
             AiProcessingPipelineScreen(
                 repository = repository,
-                onPlanConfirmed = { navController.navigate(Screen.PLAN.route) },
+                onPlanConfirmed = { navController.navigate(Screen.PLAN_REVIEW.route) },
                 onNavigateBack = { navController.popBackStack() }
             )
         }

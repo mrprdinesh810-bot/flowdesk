@@ -1,5 +1,7 @@
 package com.flowdesk.app.ui.backup
 
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -15,13 +17,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.flowdesk.app.data.repository.FlowDeskRepository
 import com.flowdesk.app.ui.theme.*
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
@@ -34,9 +36,51 @@ fun BackupScreen(
 ) {
     val coroutineScope = rememberCoroutineScope()
     var isBackingUp by remember { mutableStateOf(false) }
-    var lastBackupTimestamp by remember { mutableStateOf("2024-10-24 08:30 UTC") }
-    var showRestoreConfirmDialog by remember { mutableStateOf(false) }
+    var isRestoring by remember { mutableStateOf(false) }
     var statusFeedbackMessage by remember { mutableStateOf<String?>(null) }
+    var dbStats by remember { mutableStateOf<FlowDeskRepository.DatabaseStats?>(null) }
+
+    // Load actual database telemetry from Room on mount and after operations
+    LaunchedEffect(Unit) {
+        dbStats = repository.getDatabaseStats()
+    }
+
+    // Android Storage Access Framework (SAF) document creators/pickers
+    val createDocumentLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.CreateDocument("application/json")
+    ) { uri ->
+        if (uri != null) {
+            isBackingUp = true
+            coroutineScope.launch {
+                val result = repository.exportBackupToUri(uri)
+                isBackingUp = false
+                result.onSuccess { count ->
+                    statusFeedbackMessage = "SUCCESS: Backup created ($count tasks written to file)"
+                    dbStats = repository.getDatabaseStats()
+                }.onFailure { err ->
+                    statusFeedbackMessage = "ERROR: Failed to create backup: ${err.localizedMessage}"
+                }
+            }
+        }
+    }
+
+    val openDocumentLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.OpenDocument()
+    ) { uri ->
+        if (uri != null) {
+            isRestoring = true
+            coroutineScope.launch {
+                val result = repository.restoreBackupFromUri(uri)
+                isRestoring = false
+                result.onSuccess { count ->
+                    statusFeedbackMessage = "SUCCESS: Restored $count tasks from backup archive"
+                    dbStats = repository.getDatabaseStats()
+                }.onFailure { err ->
+                    statusFeedbackMessage = "ERROR: Invalid backup archive: ${err.localizedMessage}"
+                }
+            }
+        }
+    }
 
     LazyColumn(
         modifier = modifier
@@ -77,7 +121,7 @@ fun BackupScreen(
                 ) {
                     Box(modifier = Modifier.size(6.dp).background(StatusEmerald, CircleShape))
                     Text(
-                        text = "ENCRYPTED • ZERO CLOUD",
+                        text = "ROOM DB • AUTHENTIC LOCAL",
                         fontFamily = FontFamily.Monospace,
                         fontSize = 10.sp,
                         fontWeight = FontWeight.Bold,
@@ -99,7 +143,7 @@ fun BackupScreen(
             ) {
                 Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
                     Text(
-                        text = "[SYS_LEDGER // CORE_SYNC]",
+                        text = "[SYS_LEDGER // SAF_STORAGE]",
                         fontFamily = FontFamily.Monospace,
                         fontSize = 10.sp,
                         fontWeight = FontWeight.Bold,
@@ -117,7 +161,7 @@ fun BackupScreen(
                     )
 
                     Text(
-                        text = "All schedules, tasks, and telemetry stay strictly on your device. Zero external tracking.",
+                        text = "Real Room database storage and Storage Access Framework export. Zero mock fallbacks.",
                         fontSize = 12.sp,
                         color = TechMuted,
                         lineHeight = 16.sp
@@ -128,6 +172,10 @@ fun BackupScreen(
 
         // Storage Telemetry Card
         item {
+            val stats = dbStats
+            val dbSizeKb = if (stats != null) stats.fileSizeBytes / 1024 else 0
+            val walSizeKb = if (stats != null) stats.walSizeBytes / 1024 else 0
+
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -145,7 +193,7 @@ fun BackupScreen(
                     Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                         Box(modifier = Modifier.size(7.dp).background(StatusEmerald, CircleShape))
                         Text(
-                            text = "STORAGE TELEMETRY",
+                            text = "ROOM TELEMETRY",
                             fontFamily = FontFamily.Monospace,
                             fontSize = 11.sp,
                             fontWeight = FontWeight.Bold,
@@ -154,7 +202,7 @@ fun BackupScreen(
                     }
 
                     Text(
-                        text = "HEALTHY • ENCRYPTED",
+                        text = "PERSISTENT",
                         fontFamily = FontFamily.Monospace,
                         fontSize = 9.sp,
                         fontWeight = FontWeight.Bold,
@@ -170,34 +218,29 @@ fun BackupScreen(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    StorageInfoSlot("DATABASE FILE", "flowdesk.sqlite", "4.2 MB", Modifier.weight(1f))
-                    StorageInfoSlot("WAL JOURNAL", "flowdesk.sqlite-wal", "2.3 MB", Modifier.weight(1f))
+                    StorageInfoSlot("ROOM DATABASE", stats?.dbName ?: "flowdesk_local.db", "${dbSizeKb} KB on disk", Modifier.weight(1f))
+                    StorageInfoSlot("WAL JOURNAL", "flowdesk_local.db-wal", "${walSizeKb} KB", Modifier.weight(1f))
                 }
 
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    StorageInfoSlot("LAST BACKUP", lastBackupTimestamp, "Verified", Modifier.weight(1f))
-                    StorageInfoSlot("ENCRYPTION", "AES-256 GCM", "Hardware Key", Modifier.weight(1f))
+                    StorageInfoSlot("STORED TASKS", "${stats?.taskCount ?: 0} Nodes", "Authoritative", Modifier.weight(1f))
+                    StorageInfoSlot("BRAIN DUMPS", "${stats?.brainDumpCount ?: 0} Sessions", "Local Vault", Modifier.weight(1f))
                 }
             }
         }
 
-        // Actions: Create Backup & Restore
+        // Actions: Create Backup & Restore via SAF
         item {
             Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
                 Button(
                     onClick = {
-                        isBackingUp = true
-                        coroutineScope.launch {
-                            delay(1000)
-                            lastBackupTimestamp = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(Date())
-                            isBackingUp = false
-                            statusFeedbackMessage = "Snapshot archive generated successfully!"
-                        }
+                        val timestamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
+                        createDocumentLauncher.launch("flowdesk_backup_$timestamp.json")
                     },
-                    enabled = !isBackingUp,
+                    enabled = !isBackingUp && !isRestoring,
                     colors = ButtonDefaults.buttonColors(containerColor = ElectricCobalt),
                     shape = RoundedCornerShape(14.dp),
                     modifier = Modifier
@@ -213,7 +256,7 @@ fun BackupScreen(
                         ) {
                             Icon(Icons.Outlined.CloudUpload, contentDescription = null, modifier = Modifier.size(18.dp))
                             Text(
-                                text = "CREATE MANUAL SNAPSHOT",
+                                text = "EXPORT BACKUP (SAF JSON FILE)",
                                 fontFamily = FontFamily.Monospace,
                                 fontWeight = FontWeight.Black,
                                 fontSize = 11.sp,
@@ -224,64 +267,50 @@ fun BackupScreen(
                 }
 
                 OutlinedButton(
-                    onClick = { showRestoreConfirmDialog = true },
+                    onClick = {
+                        openDocumentLauncher.launch(arrayOf("application/json", "*/*"))
+                    },
+                    enabled = !isBackingUp && !isRestoring,
                     shape = RoundedCornerShape(14.dp),
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(52.dp)
                 ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-                        Icon(Icons.Outlined.Restore, contentDescription = null, modifier = Modifier.size(18.dp))
-                        Text(
-                            text = "RESTORE FROM ARCHIVE",
-                            fontFamily = FontFamily.Monospace,
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 11.sp
-                        )
+                    if (isRestoring) {
+                        CircularProgressIndicator(modifier = Modifier.size(18.dp), color = ElectricCobalt, strokeWidth = 2.dp)
+                    } else {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            Icon(Icons.Outlined.Restore, contentDescription = null, modifier = Modifier.size(18.dp))
+                            Text(
+                                text = "RESTORE BACKUP FROM FILE",
+                                fontFamily = FontFamily.Monospace,
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 11.sp
+                            )
+                        }
                     }
                 }
 
                 statusFeedbackMessage?.let { msg ->
+                    val isErr = msg.startsWith("ERROR")
                     Text(
                         text = msg,
                         fontFamily = FontFamily.Monospace,
-                        fontSize = 10.sp,
+                        fontSize = 11.sp,
                         fontWeight = FontWeight.Bold,
-                        color = StatusEmerald,
+                        color = if (isErr) P1Red else StatusEmerald,
                         modifier = Modifier
-                            .background(MintSoft, RoundedCornerShape(6.dp))
-                            .border(1.dp, StatusEmerald.copy(alpha = 0.3f), RoundedCornerShape(6.dp))
-                            .padding(horizontal = 10.dp, vertical = 6.dp)
+                            .fillMaxWidth()
+                            .background(if (isErr) P1Red.copy(alpha = 0.1f) else MintSoft, RoundedCornerShape(8.dp))
+                            .border(1.dp, (if (isErr) P1Red else StatusEmerald).copy(alpha = 0.3f), RoundedCornerShape(8.dp))
+                            .padding(horizontal = 12.dp, vertical = 8.dp)
                     )
                 }
             }
         }
-    }
-
-    if (showRestoreConfirmDialog) {
-        AlertDialog(
-            onDismissRequest = { showRestoreConfirmDialog = false },
-            title = { Text("Restore Local Ledger?", fontWeight = FontWeight.Bold, fontSize = 16.sp) },
-            text = { Text("This will revert your tasks and plan state to the latest archive ($lastBackupTimestamp). Current unsaved items will be overwritten.", fontSize = 13.sp) },
-            confirmButton = {
-                TextButton(
-                    onClick = {
-                        showRestoreConfirmDialog = false
-                        statusFeedbackMessage = "Ledger state restored to snapshot."
-                    }
-                ) {
-                    Text("RESTORE", fontWeight = FontWeight.Bold, color = P1Red)
-                }
-            },
-            dismissButton = {
-                TextButton(onClick = { showRestoreConfirmDialog = false }) {
-                    Text("CANCEL")
-                }
-            }
-        )
     }
 }
 
