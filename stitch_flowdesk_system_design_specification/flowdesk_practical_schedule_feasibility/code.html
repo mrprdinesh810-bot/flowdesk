@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>FlowDesk - Practical Schedule + Feasibility</title>
+<!-- Tailwind CSS v3 with Plugins -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#eef2ff',
+              100: '#e0e7ff',
+              600: '#4f46e5',
+              700: '#4338ca',
+            },
+            priority: {
+              p1: '#ef4444',
+              p2: '#f97316',
+              p3: '#eab308',
+              p4: '#22c55e',
+            }
+          }
+        }
+      }
+    }
+  </script>
+<!-- Fonts & Layout Support Styles -->
+<style data-purpose="typography">
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      color: #0f172a;
+      background-color: #f8fafc;
+    }
+  </style>
+<style data-purpose="custom-scroll-and-timeline">
+    /* Timeline connecting dashed/solid vertical guide */
+    .timeline-track::before {
+      content: '';
+      position: absolute;
+      top: 1.5rem;
+      bottom: 1.5rem;
+      left: 147px;
+      width: 2px;
+      background-color: #e2e8f0;
+      z-index: 0;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex bg-[#f8fafc] antialiased selection:bg-indigo-100 selection:text-indigo-900">
+<!-- BEGIN: LeftSidebar -->
+<aside class="w-60 bg-white border-r border-slate-200 flex flex-col justify-between flex-shrink-0 min-h-screen p-4 select-none">
+<div class="space-y-6">
+<!-- App Brand Logo -->
+<div class="flex items-center gap-2.5 px-2 py-1">
+<div class="w-7 h-7 bg-indigo-600 rounded-lg flex items-center justify-center text-white font-bold text-base shadow-sm">
+<svg class="w-4 h-4 fill-current" viewbox="0 0 24 24">
+<path d="M4 5a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V5zm0 7a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-2zm0 7a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-2z"></path>
+</svg>
+</div>
+<span class="text-lg font-bold tracking-tight text-slate-900">FlowDesk</span>
+</div>
+<!-- Navigation Links -->
+<nav class="space-y-1">
+<!-- Today (Active) -->
+<a class="flex items-center gap-3 px-3 py-2 text-sm font-semibold rounded-lg bg-indigo-50 text-indigo-700 transition-colors" href="#">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<rect height="18" rx="2" ry="2" width="18" x="3" y="4"></rect>
+<line x1="16" x2="16" y1="2" y2="6"></line>
+<line x1="8" x2="8" y1="2" y2="6"></line>
+<line x1="3" x2="21" y1="10" y2="10"></line>
+</svg>
+          Today
+        </a>
+<!-- Brain Dump -->
+<a class="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-colors" href="#">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<rect height="16" rx="2" width="16" x="4" y="4"></rect>
+<path d="M9 9h6v6H9z"></path>
+</svg>
+          Brain Dump
+        </a>
+<!-- Tasks -->
+<a class="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-colors" href="#">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<path d="M9 11l3 3L22 4"></path>
+<path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+</svg>
+          Tasks
+        </a>
+<!-- Analytics -->
+<a class="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-colors" href="#">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<path d="M18 20V10"></path>
+<path d="M12 20V4"></path>
+<path d="M6 20v-6"></path>
+</svg>
+          Analytics
+        </a>
+<!-- Settings -->
+<a class="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-colors" href="#">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<circle cx="12" cy="12" r="3"></circle>
+<path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+</svg>
+          Settings
+        </a>
+<!-- Backup -->
+<a class="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-colors" href="#">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+</svg>
+          Backup
+        </a>
+</nav>
+</div>
+<!-- Bottom Section: AI Provider & Dinesh Profile -->
+<div class="space-y-4 pt-4">
+<!-- AI Provider Card -->
+<div class="p-3 bg-white border border-slate-200 rounded-xl shadow-xs space-y-1.5" data-purpose="ai-provider-widget">
+<span class="text-[11px] font-medium tracking-wider text-slate-400 uppercase">AI Provider</span>
+<div class="flex items-center gap-1.5 text-xs font-semibold text-slate-800">
+<span class="w-2 h-2 rounded-full bg-emerald-500 inline-block"></span>
+          Ollama
+        </div>
+<div class="text-[11px] text-slate-500 font-medium">
+          Model: <span class="font-mono text-slate-700">qwen3.5:9b</span>
+</div>
+</div>
+<!-- Dinesh Profile Footer -->
+<div class="flex items-center justify-between pt-2 border-t border-slate-100 px-1">
+<div class="flex items-center gap-2">
+<div class="w-7 h-7 rounded-full bg-indigo-950 text-white font-semibold flex items-center justify-center text-xs">
+            D
+          </div>
+<span class="text-xs font-semibold text-slate-800">Dinesh</span>
+</div>
+<button aria-label="Profile options" class="text-slate-400 hover:text-slate-600">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<path d="M6 9l6 6 6-6"></path>
+</svg>
+</button>
+</div>
+</div>
+</aside>
+<!-- END: LeftSidebar -->
+<!-- BEGIN: MainContent -->
+<main class="flex-1 flex flex-col min-h-screen overflow-y-auto px-8 py-6 max-w-6xl mx-auto w-full">
+<!-- BEGIN: TopBar -->
+<header class="flex items-start justify-between pb-6">
+<div>
+<h1 class="text-2xl font-bold text-slate-900 tracking-tight">Today's Practical Schedule</h1>
+<p class="text-xs text-slate-500 mt-1 font-normal">Here's your proposed day. Check if it's realistic and fits your time.</p>
+</div>
+<!-- Time, Notifications and Action Buttons -->
+<div class="flex items-center gap-4">
+<div class="flex items-center gap-2 text-xs font-medium text-slate-600">
+<span>4:46 PM</span>
+<button aria-label="Notifications" class="relative p-1 text-slate-500 hover:text-slate-700">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+<path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+</svg>
+<span class="absolute -top-1 -right-1 bg-indigo-600 text-white text-[9px] font-bold rounded-full w-3.5 h-3.5 flex items-center justify-center">2</span>
+</button>
+</div>
+<button class="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-slate-300 text-slate-700 text-xs font-medium rounded-lg shadow-xs hover:bg-slate-50 transition-colors">
+<svg class="w-3.5 h-3.5 text-slate-500" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+<path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+</svg>
+          Edit Plan
+        </button>
+</div>
+</header>
+<!-- END: TopBar -->
+<!-- BEGIN: TopSummaryCards -->
+<section class="grid grid-cols-12 gap-3.5 mb-6" data-purpose="summary-metrics">
+<!-- Card 1: Today's Main Outcome (Col span 5) -->
+<div class="col-span-5 bg-white border border-slate-200 rounded-xl p-4 flex flex-col justify-between shadow-xs">
+<div class="flex items-center gap-2">
+<span class="text-indigo-600">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<circle cx="12" cy="12" r="10"></circle>
+<circle cx="12" cy="12" r="6"></circle>
+<circle cx="12" cy="12" r="2"></circle>
+</svg>
+</span>
+<span class="text-[11px] font-bold uppercase tracking-wider text-slate-500">Today's Main Outcome</span>
+</div>
+<p class="text-sm font-semibold text-slate-900 leading-snug mt-2">
+          Complete EDC revision and verify the TRAKAE parser.
+        </p>
+</div>
+<!-- Card 2: Total Tasks -->
+<div class="col-span-2 bg-white border border-slate-200 rounded-xl p-4 flex flex-col justify-between shadow-xs">
+<span class="text-xs text-slate-500 font-medium">Total Tasks</span>
+<span class="text-2xl font-bold text-slate-900 leading-tight">6</span>
+</div>
+<!-- Card 3: Planned Time -->
+<div class="col-span-2 bg-white border border-slate-200 rounded-xl p-4 flex flex-col justify-between shadow-xs">
+<span class="text-xs text-slate-500 font-medium">Planned Time</span>
+<span class="text-2xl font-bold text-slate-900 leading-tight">3h 30m</span>
+</div>
+<!-- Card 4: Feasibility -->
+<div class="col-span-3 bg-white border border-slate-200 rounded-xl p-4 flex flex-col justify-between shadow-xs">
+<span class="text-xs text-slate-500 font-medium">Feasibility</span>
+<div>
+<div class="flex items-center gap-1.5 text-sm font-bold text-emerald-600">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewbox="0 0 24 24">
+<polyline points="20 6 9 17 4 12"></polyline>
+</svg>
+            Achievable
+          </div>
+<p class="text-[11px] text-slate-400 mt-0.5">Fits within your available time.</p>
+</div>
+</div>
+</section>
+<!-- END: TopSummaryCards -->
+<!-- BEGIN: ProposedScheduleTimeline -->
+<section class="bg-white border border-slate-200 rounded-xl p-5 mb-6 shadow-xs" data-purpose="chronological-schedule">
+<!-- Schedule Header & Priority Legend -->
+<div class="flex items-center justify-between pb-4 border-b border-slate-100 mb-2">
+<h2 class="text-xs font-bold text-slate-800 tracking-tight">Proposed Schedule <span class="font-normal text-slate-400">(Chronological)</span></h2>
+<!-- Legend Indicator -->
+<div class="flex items-center gap-3 text-[11px] font-medium text-slate-500">
+<span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-red-500"></span> P1 <span class="text-slate-400 font-normal">Critical</span></span>
+<span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-orange-500"></span> P2 <span class="text-slate-400 font-normal">High</span></span>
+<span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-yellow-400"></span> P3 <span class="text-slate-400 font-normal">Useful</span></span>
+<span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-emerald-500"></span> P4 <span class="text-slate-400 font-normal">Low</span></span>
+<span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-slate-400"></span> Fixed</span>
+</div>
+</div>
+<!-- Timeline Items List -->
+<div class="relative timeline-track space-y-1 py-1">
+<!-- Timeline Item 1: Fixed Commitment -->
+<div class="flex items-center relative z-10 py-1.5 hover:bg-slate-50/70 rounded-lg px-2 transition-colors">
+<div class="w-32 text-right pr-4 text-xs font-semibold text-slate-700">
+            4:00 PM <span class="block text-[11px] font-normal text-slate-400">– 4:30 PM</span>
+</div>
+<div class="w-7 flex justify-center">
+<span class="w-2.5 h-2.5 rounded-full bg-slate-400 border-2 border-white ring-2 ring-slate-100"></span>
+</div>
+<div class="flex-1 pl-4 flex items-center justify-between">
+<div>
+<div class="text-xs font-semibold text-slate-800">College (Fixed Commitment)</div>
+<div class="text-[11px] text-slate-400">Already committed</div>
+</div>
+</div>
+</div>
+<!-- Timeline Item 2: EDC Revision (P1) -->
+<div class="flex items-center relative z-10 py-1.5 hover:bg-slate-50/70 rounded-lg px-2 transition-colors">
+<div class="w-32 text-right pr-4 text-xs font-semibold text-slate-700">
+            4:30 PM <span class="block text-[11px] font-normal text-slate-400">– 6:00 PM</span>
+</div>
+<div class="w-7 flex justify-center">
+<span class="w-2.5 h-2.5 rounded-full bg-red-500 border-2 border-white ring-2 ring-red-100"></span>
+</div>
+<div class="flex-1 pl-4 flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="px-1.5 py-0.5 rounded text-[10px] font-bold bg-red-500 text-white">P1</span>
+<div>
+<div class="text-xs font-bold text-slate-900">EDC Revision</div>
+<div class="text-[11px] text-slate-500">Complete Diode topic + solve 5 problems.</div>
+</div>
+</div>
+<span class="text-xs font-medium text-slate-600">90 min</span>
+</div>
+</div>
+<!-- Timeline Item 3: Break -->
+<div class="flex items-center relative z-10 py-1.5 hover:bg-slate-50/70 rounded-lg px-2 transition-colors">
+<div class="w-32 text-right pr-4 text-xs font-semibold text-slate-700">
+            6:00 PM <span class="block text-[11px] font-normal text-slate-400">– 6:30 PM</span>
+</div>
+<div class="w-7 flex justify-center">
+<span class="w-2.5 h-2.5 rounded-full bg-sky-400 border-2 border-white ring-2 ring-sky-100"></span>
+</div>
+<div class="flex-1 pl-4 flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="p-1 rounded bg-sky-100 text-sky-600">
+<svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<path d="M18 8h1a4 4 0 0 1 0 8h-1"></path>
+<path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path>
+<line x1="6" x2="6" y1="1" y2="4"></line>
+<line x1="10" x2="10" y1="1" y2="4"></line>
+<line x1="14" x2="14" y1="1" y2="4"></line>
+</svg>
+</span>
+<div>
+<div class="text-xs font-bold text-slate-900">Break</div>
+<div class="text-[11px] text-slate-500">Rest and refresh</div>
+</div>
+</div>
+<span class="text-xs font-medium text-slate-600">30 min</span>
+</div>
+</div>
+<!-- Timeline Item 4: Gym (P3) -->
+<div class="flex items-center relative z-10 py-1.5 hover:bg-slate-50/70 rounded-lg px-2 transition-colors">
+<div class="w-32 text-right pr-4 text-xs font-semibold text-slate-700">
+            6:30 PM <span class="block text-[11px] font-normal text-slate-400">– 7:15 PM</span>
+</div>
+<div class="w-7 flex justify-center">
+<span class="w-2.5 h-2.5 rounded-full bg-yellow-400 border-2 border-white ring-2 ring-yellow-100"></span>
+</div>
+<div class="flex-1 pl-4 flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="px-1.5 py-0.5 rounded text-[10px] font-bold bg-yellow-400 text-slate-900">P3</span>
+<div>
+<div class="text-xs font-bold text-slate-900">Gym</div>
+<div class="text-[11px] text-slate-500">Workout and stay consistent.</div>
+</div>
+</div>
+<span class="text-xs font-medium text-slate-600">45 min</span>
+</div>
+</div>
+<!-- Timeline Item 5: TRAKAE Parser (P2) -->
+<div class="flex items-center relative z-10 py-1.5 hover:bg-slate-50/70 rounded-lg px-2 transition-colors">
+<div class="w-32 text-right pr-4 text-xs font-semibold text-slate-700">
+            7:30 PM <span class="block text-[11px] font-normal text-slate-400">– 9:00 PM</span>
+</div>
+<div class="w-7 flex justify-center">
+<span class="w-2.5 h-2.5 rounded-full bg-orange-500 border-2 border-white ring-2 ring-orange-100"></span>
+</div>
+<div class="flex-1 pl-4 flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="px-1.5 py-0.5 rounded text-[10px] font-bold bg-orange-500 text-white">P2</span>
+<div>
+<div class="text-xs font-bold text-slate-900">TRAKAE Parser</div>
+<div class="text-[11px] text-slate-500">Fix CSV mapping and verify parser output.</div>
+</div>
+</div>
+<span class="text-xs font-medium text-slate-600">90 min</span>
+</div>
+</div>
+<!-- Timeline Item 6: Check GitHub Issue (P4) -->
+<div class="flex items-center relative z-10 py-1.5 hover:bg-slate-50/70 rounded-lg px-2 transition-colors">
+<div class="w-32 text-right pr-4 text-xs font-semibold text-slate-700">
+            9:00 PM <span class="block text-[11px] font-normal text-slate-400">– 9:30 PM</span>
+</div>
+<div class="w-7 flex justify-center">
+<span class="w-2.5 h-2.5 rounded-full bg-emerald-500 border-2 border-white ring-2 ring-emerald-100"></span>
+</div>
+<div class="flex-1 pl-4 flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="px-1.5 py-0.5 rounded text-[10px] font-bold bg-emerald-500 text-white">P4</span>
+<div>
+<div class="text-xs font-bold text-slate-900">Check GitHub Issue</div>
+<div class="text-[11px] text-slate-500">Review and respond if needed.</div>
+</div>
+</div>
+<span class="text-xs font-medium text-slate-600">30 min</span>
+</div>
+</div>
+<!-- Timeline Item 7: Revise Python (P4) -->
+<div class="flex items-center relative z-10 py-1.5 hover:bg-slate-50/70 rounded-lg px-2 transition-colors">
+<div class="w-32 text-right pr-4 text-xs font-semibold text-slate-700">
+            9:30 PM <span class="block text-[11px] font-normal text-slate-400">– 10:00 PM</span>
+</div>
+<div class="w-7 flex justify-center">
+<span class="w-2.5 h-2.5 rounded-full bg-emerald-500 border-2 border-white ring-2 ring-emerald-100"></span>
+</div>
+<div class="flex-1 pl-4 flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="px-1.5 py-0.5 rounded text-[10px] font-bold bg-emerald-500 text-white">P4</span>
+<div>
+<div class="text-xs font-bold text-slate-900">Revise Python <span class="font-normal text-slate-500">(If time remains)</span></div>
+<div class="text-[11px] text-slate-500">Quick revision of key topics.</div>
+</div>
+</div>
+<span class="text-xs font-medium text-slate-600">30 min</span>
+</div>
+</div>
+<!-- Timeline Item 8: Buffer / Wrap-up -->
+<div class="flex items-center relative z-10 py-1.5 hover:bg-slate-50/70 rounded-lg px-2 transition-colors">
+<div class="w-32 text-right pr-4 text-xs font-semibold text-slate-700">
+            10:00 PM <span class="block text-[11px] font-normal text-slate-400">– 10:30 PM</span>
+</div>
+<div class="w-7 flex justify-center">
+<span class="w-2.5 h-2.5 rounded-full bg-indigo-500 border-2 border-white ring-2 ring-indigo-100"></span>
+</div>
+<div class="flex-1 pl-4 flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="p-1 rounded bg-indigo-100 text-indigo-600">
+<svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<circle cx="12" cy="12" r="10"></circle>
+<polyline points="12 6 12 12 16 14"></polyline>
+</svg>
+</span>
+<div>
+<div class="text-xs font-bold text-slate-900">Buffer / Wrap-up</div>
+<div class="text-[11px] text-slate-500">Any overruns or important pending items.</div>
+</div>
+</div>
+<span class="text-xs font-medium text-slate-600">30 min</span>
+</div>
+</div>
+</div>
+</section>
+<!-- END: ProposedScheduleTimeline -->
+<!-- BEGIN: FeasibilityAndOverloadGrid -->
+<section class="grid grid-cols-2 gap-4 mb-6">
+<!-- Left Card: Feasibility Check (Positive) -->
+<div class="bg-white border border-slate-200 rounded-xl p-5 shadow-xs flex flex-col justify-between" data-purpose="feasibility-status">
+<div>
+<!-- Header Badge -->
+<div class="flex items-center gap-1.5 text-xs font-bold text-emerald-600 mb-2">
+<span class="w-4 h-4 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center">
+<svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" stroke-width="3" viewbox="0 0 24 24">
+<polyline points="20 6 9 17 4 12"></polyline>
+</svg>
+</span>
+            Feasibility Check
+          </div>
+<h3 class="text-sm font-bold text-slate-900">Looks good!</h3>
+<p class="text-xs text-slate-500">All tasks fit within your available time.</p>
+</div>
+<!-- 3 Metrics Columns -->
+<div class="grid grid-cols-3 gap-2 pt-4 border-t border-slate-100 mt-4">
+<div>
+<span class="text-[11px] text-slate-400 block font-medium">Available Time</span>
+<span class="text-sm font-bold text-slate-800">6h 00m</span>
+<span class="text-[10px] text-slate-400 block">(4:30 PM – 10:30 PM)</span>
+</div>
+<div>
+<span class="text-[11px] text-slate-400 block font-medium">Planned Time</span>
+<span class="text-sm font-bold text-slate-800">3h 30m</span>
+</div>
+<div>
+<span class="text-[11px] text-slate-400 block font-medium">Buffer Time</span>
+<span class="text-sm font-bold text-slate-800">2h 30m</span>
+<span class="text-[10px] text-slate-400 block">(42%)</span>
+</div>
+</div>
+</div>
+<!-- Right Card: What if it's overloaded? (Guidance) -->
+<div class="bg-white border border-slate-200 rounded-xl p-5 shadow-xs flex flex-col justify-between" data-purpose="overload-warning">
+<div>
+<!-- Header Badge -->
+<div class="flex items-center gap-1.5 text-xs font-bold text-red-600 mb-1">
+<span class="w-4 h-4 rounded-full bg-red-100 text-red-600 flex items-center justify-center">
+<svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" stroke-width="2.5" viewbox="0 0 24 24">
+<circle cx="12" cy="12" r="10"></circle>
+<line x1="12" x2="12" y1="8" y2="12"></line>
+<line x1="12" x2="12.01" y1="16" y2="16"></line>
+</svg>
+</span>
+            What if it's overloaded?
+          </div>
+<h3 class="text-xs font-bold text-slate-900">Plan is overloaded</h3>
+<p class="text-[11px] text-slate-400">Planned time exceeds available time.</p>
+</div>
+<!-- Overload Metrics Comparison -->
+<div class="grid grid-cols-2 gap-2 my-2 py-2 border-y border-slate-100 text-xs">
+<div>
+<span class="text-[10px] text-slate-400 block">Planned Time</span>
+<span class="font-bold text-slate-800">6h 15m</span>
+</div>
+<div>
+<span class="text-[10px] text-slate-400 block">Available Time</span>
+<span class="font-bold text-slate-800">4h 30m</span>
+</div>
+</div>
+<!-- Recommendations & Action Button -->
+<div class="flex items-end justify-between">
+<div class="space-y-0.5">
+<span class="text-[11px] font-semibold text-slate-600 block">Recommended:</span>
+<ul class="text-[10px] space-y-0.5 font-medium">
+<li class="text-slate-600"><span class="text-red-500 font-bold">•</span> Keep <strong class="text-slate-800">P1</strong> (Critical)</li>
+<li class="text-slate-600"><span class="text-orange-500 font-bold">•</span> Keep <strong class="text-slate-800">P2</strong> (High Value)</li>
+<li class="text-slate-600"><span class="text-yellow-600 font-bold">•</span> Move <strong class="text-slate-800">P3</strong> to another day</li>
+<li class="text-slate-600"><span class="text-emerald-600 font-bold">•</span> Move <strong class="text-slate-800">P4</strong> to another day</li>
+</ul>
+</div>
+<button class="px-3 py-1 text-xs font-medium text-indigo-700 bg-white border border-indigo-200 rounded-md hover:bg-indigo-50 transition-colors shadow-2xs">
+            Resolve Overload
+          </button>
+</div>
+</div>
+</section>
+<!-- END: FeasibilityAndOverloadGrid -->
+<!-- BEGIN: WasteTimeAndMoveTasksSection -->
+<section class="grid grid-cols-2 gap-4 mb-6">
+<!-- Do Not Waste Time On -->
+<div class="bg-white border border-slate-200 rounded-xl p-4 shadow-xs">
+<div class="flex items-center gap-2 text-xs font-bold text-red-600 mb-2">
+<svg class="w-4 h-4 text-red-500" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<circle cx="12" cy="12" r="10"></circle>
+<line x1="4.93" x2="19.07" y1="4.93" y2="19.07"></line>
+</svg>
+          Do Not Waste Time On
+        </div>
+<ul class="text-xs text-slate-600 space-y-1 pl-1">
+<li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-red-500"></span> Unnecessary web browsing</li>
+<li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-red-500"></span> Low-value social media</li>
+<li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-red-500"></span> Non-urgent tasks</li>
+<li class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-red-500"></span> Repeated work</li>
+</ul>
+</div>
+<!-- Move to Another Day -->
+<div class="bg-white border border-slate-200 rounded-xl p-4 shadow-xs flex flex-col justify-between">
+<div class="flex items-center gap-2 text-xs font-bold text-indigo-600 mb-2">
+<svg class="w-4 h-4 text-indigo-500" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<rect height="18" rx="2" ry="2" width="18" x="3" y="4"></rect>
+<line x1="16" x2="16" y1="2" y2="6"></line>
+<line x1="8" x2="8" y1="2" y2="6"></line>
+<line x1="3" x2="21" y1="10" y2="10"></line>
+</svg>
+          Move to Another Day
+        </div>
+<div class="space-y-2">
+<!-- Move Item 1 -->
+<div class="flex items-center justify-between py-1 border-b border-slate-100 last:border-b-0">
+<div class="flex items-center gap-2">
+<span class="px-1.5 py-0.2 rounded text-[9px] font-bold bg-emerald-500 text-white">P4</span>
+<span class="text-xs font-semibold text-slate-800">Check GitHub Issue</span>
+</div>
+<button class="px-2.5 py-0.5 text-xs text-slate-600 border border-slate-200 rounded hover:bg-slate-50 transition-colors">
+              Move
+            </button>
+</div>
+<!-- Move Item 2 -->
+<div class="flex items-center justify-between py-1 border-b border-slate-100 last:border-b-0">
+<div class="flex items-center gap-2">
+<span class="px-1.5 py-0.2 rounded text-[9px] font-bold bg-emerald-500 text-white">P4</span>
+<span class="text-xs font-semibold text-slate-800">Revise Python</span>
+</div>
+<button class="px-2.5 py-0.5 text-xs text-slate-600 border border-slate-200 rounded hover:bg-slate-50 transition-colors">
+              Move
+            </button>
+</div>
+</div>
+</div>
+</section>
+<!-- END: WasteTimeAndMoveTasksSection -->
+<!-- BEGIN: BottomActionDock -->
+<footer class="flex items-center justify-between pt-2 pb-6" data-purpose="actions-dock">
+<button class="flex items-center gap-2 px-4 py-2.5 text-xs font-semibold text-slate-700 bg-white border border-slate-300 rounded-lg hover:bg-slate-50 transition-colors shadow-xs">
+<svg class="w-3.5 h-3.5 text-slate-500" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path>
+</svg>
+        Regenerate Plan
+      </button>
+<!-- Primary Lock Plan Button -->
+<button class="flex items-center gap-2 px-6 py-2.5 text-xs font-bold text-white bg-indigo-700 hover:bg-indigo-800 active:scale-[0.99] rounded-lg shadow-sm transition-all">
+<svg class="w-4 h-4 stroke-white" fill="none" stroke="currentColor" stroke-width="2.5" viewbox="0 0 24 24">
+<polyline points="20 6 9 17 4 12"></polyline>
+</svg>
+<span class="flex flex-col text-left">
+<span>Ready to FIX Plan</span>
+<span class="text-[10px] font-normal text-indigo-200 -mt-0.5">Review and lock this plan</span>
+</span>
+</button>
+</footer>
+<!-- END: BottomActionDock -->
+</main>
+<!-- END: MainContent -->
+</body></html>

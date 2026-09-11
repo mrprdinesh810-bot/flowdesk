@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>FlowDesk — System States &amp; Responsive Patterns</title>
+<!-- Tailwind CSS v3 with Plugins -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#eef2ff',
+              100: '#e0e7ff',
+              500: '#6366f1',
+              600: '#4f46e5',
+              700: '#4338ca',
+            },
+            surface: '#f8f9fa',
+            borderLight: '#e2e5e9',
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+<style data-purpose="custom-typography">
+    body {
+      font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 5px;
+      height: 5px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body class="bg-[#F8F9FA] text-slate-800 min-h-screen flex antialiased selection:bg-brand-500 selection:text-white">
+<!-- BEGIN: LeftSidebar -->
+<aside class="w-64 border-r border-[#E2E5E9] bg-white flex flex-col justify-between shrink-0 fixed inset-y-0 left-0 z-30" data-purpose="sidebar-navigation">
+<!-- Top Branding & Navigation Links -->
+<div class="p-5">
+<!-- FlowDesk Brand Logo -->
+<div class="flex items-center gap-2.5 mb-8">
+<div class="w-8 h-8 rounded-lg bg-brand-600 flex items-center justify-center text-white font-bold text-lg shadow-sm">
+          F
+        </div>
+<span class="text-xl font-bold tracking-tight text-slate-900">FlowDesk</span>
+</div>
+<!-- Navigation Items -->
+<nav class="space-y-1.5 font-medium text-sm text-slate-600">
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-50 transition-colors text-slate-600" href="#">
+<svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24"><rect height="18" rx="2" ry="2" width="18" x="3" y="4"></rect><line x1="16" x2="16" y1="2" y2="6"></line><line x1="8" x2="8" y1="2" y2="6"></line><line x1="3" x2="21" y1="10" y2="10"></line></svg>
+          Today
+        </a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-50 transition-colors text-slate-600" href="#">
+<svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24"><rect height="18" rx="2" width="18" x="3" y="3"></rect><path d="M9 12h6"></path><path d="M12 9v6"></path></svg>
+          Brain Dump
+        </a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-50 transition-colors text-slate-600" href="#">
+<svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24"><path d="M9 11l3 3L22 4"></path><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
+          Tasks
+        </a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-50 transition-colors text-slate-600" href="#">
+<svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24"><line x1="18" x2="18" y1="20" y2="10"></line><line x1="12" x2="12" y1="20" y2="4"></line><line x1="6" x2="6" y1="20" y2="14"></line></svg>
+          Analytics
+        </a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-50 transition-colors text-slate-600" href="#">
+<svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+          Settings
+        </a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-50 transition-colors text-slate-600" href="#">
+<svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
+          Backup
+        </a>
+</nav>
+</div>
+<!-- Bottom Profile & AI Status Card -->
+<div class="p-4 border-t border-[#E2E5E9] space-y-3">
+<!-- AI Engine Indicator -->
+<div class="bg-slate-50 rounded-lg p-2.5 border border-slate-200/60">
+<div class="text-[11px] text-slate-400 font-medium">AI Provider</div>
+<div class="flex items-center gap-1.5 mt-0.5">
+<span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+<span class="text-xs font-semibold text-slate-800">Ollama</span>
+</div>
+<div class="text-[11px] text-slate-400 font-medium mt-1.5">Model</div>
+<div class="text-xs font-medium text-slate-700">qwen3.5:9b</div>
+</div>
+<!-- User Profile Pill -->
+<div class="flex items-center justify-between pt-1">
+<div class="flex items-center gap-2">
+<div class="w-7 h-7 rounded-full bg-slate-900 text-white font-bold text-xs flex items-center justify-center">
+            D
+          </div>
+<span class="text-xs font-semibold text-slate-800">Dinesh</span>
+</div>
+<svg class="w-4 h-4 text-slate-400 cursor-pointer" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</div>
+</div>
+</aside>
+<!-- END: LeftSidebar -->
+<!-- BEGIN: MainContentArea -->
+<main class="pl-64 flex-1 flex flex-col min-w-0 bg-[#F8F9FA] pb-12" data-purpose="main-layout">
+<!-- Top Header Bar -->
+<header class="px-8 py-6 border-b border-[#E2E5E9] bg-white flex items-center justify-between sticky top-0 z-20">
+<div>
+<h1 class="text-xl font-bold tracking-tight text-slate-900">
+          FlowDesk — System States &amp; Responsive Patterns
+        </h1>
+<p class="text-xs text-slate-500 mt-0.5">
+          Reusable interface states and responsive behavior used throughout FlowDesk.
+        </p>
+</div>
+<!-- Right Header Status / Notifications -->
+<div class="flex items-center gap-4 text-xs font-semibold text-slate-500">
+<span>10:21 PM</span>
+<div class="relative cursor-pointer">
+<svg class="w-5 h-5 text-slate-600" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+<path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+</svg>
+<span class="absolute -top-1.5 -right-1.5 w-4 h-4 rounded-full bg-brand-600 text-[10px] text-white flex items-center justify-center font-bold">2</span>
+</div>
+</div>
+</header>
+<!-- Content Workspace -->
+<div class="p-8 space-y-6 max-w-[1550px]">
+<!-- BEGIN: Section1_SystemStatesRow -->
+<section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4" data-purpose="row-1-system-states">
+<!-- Loading States Card -->
+<div class="bg-white rounded-xl border border-[#E2E5E9] p-4 flex flex-col justify-between shadow-sm">
+<div>
+<div class="text-[10px] uppercase font-bold tracking-wider text-slate-400 mb-2">LOADING STATES</div>
+<div class="text-xs font-medium text-slate-800 mb-2.5">Understanding your day...</div>
+<ul class="space-y-1.5 text-xs text-slate-600">
+<li class="flex items-center gap-1.5">
+<span class="text-emerald-500 font-bold text-xs">✓</span>
+<span class="text-slate-600">Reading your brain dump</span>
+</li>
+<li class="flex items-center gap-1.5">
+<span class="text-emerald-500 font-bold text-xs">✓</span>
+<span class="text-slate-600">Finding tasks</span>
+</li>
+<li class="flex items-center gap-1.5">
+<span class="w-2 h-2 rounded-full bg-brand-600 inline-block animate-pulse"></span>
+<span class="font-medium text-slate-800">Checking priorities</span>
+</li>
+<li class="flex items-center gap-1.5">
+<span class="w-2 h-2 rounded-full border border-slate-300 inline-block"></span>
+<span class="text-slate-400">Building schedule</span>
+</li>
+</ul>
+</div>
+<div class="flex items-center gap-1.5 mt-4 pt-3 border-t border-slate-100">
+<span class="px-2 py-0.5 rounded text-[10px] font-medium bg-indigo-50 text-indigo-700 border border-indigo-100">Loading...</span>
+<span class="px-2 py-0.5 rounded text-[10px] font-medium bg-slate-100 text-slate-600">Saving...</span>
+<span class="px-2 py-0.5 rounded text-[10px] font-medium bg-slate-100 text-slate-600">Validating...</span>
+</div>
+</div>
+<!-- Success States Card -->
+<div class="bg-white rounded-xl border border-[#E2E5E9] p-4 shadow-sm">
+<div class="text-[10px] uppercase font-bold tracking-wider text-slate-400 mb-3">SUCCESS STATES</div>
+<div class="space-y-2.5 text-xs">
+<div class="flex items-center gap-2 text-emerald-600 font-medium">
+<span class="text-sm">✓</span>
+<span>Plan fixed successfully</span>
+</div>
+<div class="flex items-center gap-2 text-emerald-600 font-medium">
+<span class="text-sm">✓</span>
+<span>Task completed</span>
+</div>
+<div class="flex items-center gap-2 text-emerald-600 font-medium">
+<span class="text-sm">✓</span>
+<span>Backup created successfully</span>
+</div>
+<div class="flex items-center gap-2 text-emerald-600 font-medium">
+<span class="text-sm">✓</span>
+<span>Settings saved</span>
+</div>
+</div>
+</div>
+<!-- Error States Card -->
+<div class="bg-red-50/50 rounded-xl border border-red-200/80 p-4 shadow-sm flex flex-col justify-between">
+<div>
+<div class="text-[10px] uppercase font-bold tracking-wider text-red-700 mb-2">ERROR STATES</div>
+<div class="flex items-start gap-2 mt-1">
+<div class="w-4 h-4 rounded-full bg-red-600 text-white flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5">!</div>
+<span class="text-xs font-semibold text-red-900">Something went wrong.</span>
+</div>
+<p class="text-xs text-slate-600 mt-2 pl-6">
+              We couldn't complete this action.
+            </p>
+</div>
+<div class="mt-4 pt-2">
+<button class="w-full py-1 px-3 text-xs font-medium text-slate-700 bg-white border border-slate-300 rounded hover:bg-slate-50 transition-colors shadow-xs">
+              Retry
+            </button>
+</div>
+</div>
+<!-- AI Unavailable Card -->
+<div class="bg-amber-50/40 rounded-xl border border-amber-200/80 p-4 shadow-sm flex flex-col justify-between">
+<div>
+<div class="text-[10px] uppercase font-bold tracking-wider text-amber-700 mb-2">AI UNAVAILABLE</div>
+<div class="flex items-center gap-2">
+<span class="w-3 h-3 rounded-full bg-amber-400 inline-block shrink-0"></span>
+<span class="text-xs font-semibold text-slate-800">AI unavailable</span>
+</div>
+<p class="text-xs text-slate-600 mt-1 pl-5">Your data is safe.</p>
+</div>
+<div class="space-y-1.5 mt-3 pt-2">
+<button class="w-full py-1 text-xs font-medium text-slate-700 bg-white border border-slate-300 rounded hover:bg-slate-50 transition-colors shadow-xs">
+              Retry
+            </button>
+<button class="w-full py-1 text-xs font-medium text-brand-600 bg-white border border-brand-200 rounded hover:bg-brand-50 transition-colors shadow-xs">
+              Use Quick Split
+            </button>
+</div>
+</div>
+<!-- Offline State Card -->
+<div class="bg-slate-50/70 rounded-xl border border-[#E2E5E9] p-4 shadow-sm flex flex-col justify-between">
+<div>
+<div class="text-[10px] uppercase font-bold tracking-wider text-slate-400 mb-2">OFFLINE STATE</div>
+<div class="flex items-center gap-2 mb-2">
+<span class="w-2.5 h-2.5 rounded-full border-2 border-brand-600 bg-white inline-block"></span>
+<span class="text-xs font-bold text-slate-800">Offline mode</span>
+</div>
+<p class="text-xs text-slate-600 leading-relaxed">
+              Core FlowDesk features remain available.
+            </p>
+<p class="text-[11px] text-slate-500 mt-2 leading-relaxed">
+              AI features will return when the provider is available.
+            </p>
+</div>
+</div>
+</section>
+<!-- END: Section1_SystemStatesRow -->
+<!-- BEGIN: Section2_MiddleStatusGrid -->
+<section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4" data-purpose="row-2-middle-tools">
+<!-- AI Provider Status Card -->
+<div class="bg-white rounded-xl border border-[#E2E5E9] p-4 shadow-sm">
+<div class="text-[10px] uppercase font-bold tracking-wider text-slate-400 mb-3">AI PROVIDER STATUS</div>
+<div class="grid grid-cols-2 gap-3 text-xs">
+<div>
+<span class="font-bold text-slate-900 block mb-2">Ollama</span>
+<div class="space-y-1.5 text-[11px]">
+<div class="flex items-center gap-1.5">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+<span class="text-slate-700">Connected</span>
+</div>
+<div class="flex items-center gap-1.5">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+<span class="text-slate-600">Testing</span>
+</div>
+<div class="flex items-center gap-1.5">
+<span class="w-1.5 h-1.5 rounded-full bg-red-500"></span>
+<span class="text-slate-600">Unavailable</span>
+</div>
+<div class="text-[10px] text-slate-400 leading-tight pt-1">Configuration required</div>
+</div>
+</div>
+<div>
+<span class="font-bold text-slate-900 block mb-2">OpenRouter</span>
+<div class="space-y-1.5 text-[11px]">
+<div class="flex items-center gap-1.5">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+<span class="text-slate-700">Connected</span>
+</div>
+<div class="flex items-center gap-1.5">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+<span class="text-slate-600">Testing</span>
+</div>
+<div class="flex items-center gap-1.5">
+<span class="w-1.5 h-1.5 rounded-full bg-red-500"></span>
+<span class="text-slate-600">Unavailable</span>
+</div>
+<div class="text-[10px] text-slate-400 leading-tight pt-1">Configuration required</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Feasibility Warning Card -->
+<div class="bg-amber-50/30 rounded-xl border border-amber-200 p-4 shadow-sm">
+<div class="text-[10px] uppercase font-bold tracking-wider text-amber-800 mb-2">FEASIBILITY WARNING</div>
+<div class="flex items-center gap-1.5 text-amber-700 font-semibold text-xs mb-2.5">
+<span>⚠</span>
+<span>Plan is overloaded</span>
+</div>
+<div class="space-y-1 text-xs mb-3">
+<div class="flex justify-between">
+<span class="text-slate-500">Planned:</span>
+<span class="font-bold text-slate-800">6h 15m</span>
+</div>
+<div class="flex justify-between">
+<span class="text-slate-500">Available:</span>
+<span class="font-bold text-slate-800">4h 30m</span>
+</div>
+</div>
+<div class="text-[11px] text-slate-600 leading-normal pt-1 border-t border-amber-100">
+<span class="font-semibold text-slate-700">Recommendation:</span> Move lower-priority work.
+          </div>
+</div>
+<!-- Fix Success Card -->
+<div class="bg-white rounded-xl border border-[#E2E5E9] p-4 shadow-sm flex flex-col justify-between">
+<div>
+<div class="text-[10px] uppercase font-bold tracking-wider text-slate-400 mb-2">FIX SUCCESS</div>
+<div class="flex items-center gap-1.5 text-xs font-bold text-emerald-600 mb-2">
+<span>✓</span>
+<span>PLAN FIXED</span>
+</div>
+<p class="text-xs text-slate-600 leading-relaxed">
+              Your schedule is now ready to execute.
+            </p>
+</div>
+<div class="mt-4 pt-2">
+<button class="w-full py-1.5 px-3 text-xs font-semibold text-brand-600 bg-brand-50 border border-brand-200 rounded-lg hover:bg-brand-100 transition-colors">
+              View Today's Plan
+            </button>
+</div>
+</div>
+<!-- Task States Card -->
+<div class="bg-white rounded-xl border border-[#E2E5E9] p-4 shadow-sm">
+<div class="text-[10px] uppercase font-bold tracking-wider text-slate-400 mb-3">TASK STATES</div>
+<div class="grid grid-cols-1 gap-1.5 text-center">
+<div class="py-1 px-2 rounded text-[11px] font-semibold bg-indigo-50 text-indigo-600 border border-indigo-100">Running</div>
+<div class="py-1 px-2 rounded text-[11px] font-semibold bg-amber-50 text-amber-700 border border-amber-100">Paused</div>
+<div class="py-1 px-2 rounded text-[11px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-100">Completed</div>
+<div class="py-1 px-2 rounded text-[11px] font-semibold bg-orange-50 text-orange-700 border border-orange-100">Postponed</div>
+<div class="py-1 px-2 rounded text-[11px] font-semibold bg-red-50 text-red-700 border border-red-100">Missed</div>
+<div class="py-1 px-2 rounded text-[11px] font-semibold bg-sky-50 text-sky-700 border border-sky-100">Rescheduled</div>
+</div>
+</div>
+<!-- Timer States Card -->
+<div class="bg-white rounded-xl border border-[#E2E5E9] p-4 shadow-sm flex flex-col justify-between text-xs">
+<div>
+<div class="text-[10px] uppercase font-bold tracking-wider text-slate-400 mb-2">TIMER STATES</div>
+<div class="space-y-3">
+<!-- Ready state -->
+<div class="flex items-center justify-between pb-1.5 border-b border-slate-100">
+<div>
+<div class="text-[9px] uppercase tracking-wider text-slate-400 font-semibold">READY</div>
+<div class="font-mono text-xs font-bold text-slate-700">00:00:00</div>
+</div>
+<button class="px-2 py-0.5 text-[10px] font-bold text-brand-600 border border-brand-200 rounded hover:bg-brand-50">START</button>
+</div>
+<!-- Running state -->
+<div class="flex items-center justify-between pb-1.5 border-b border-slate-100">
+<div>
+<div class="text-[9px] uppercase tracking-wider text-emerald-600 font-bold">RUNNING</div>
+<div class="font-mono text-xs font-bold text-slate-900">01:17:42</div>
+</div>
+<button class="px-2 py-0.5 text-[10px] font-bold text-slate-600 border border-slate-200 rounded hover:bg-slate-50">PAUSE</button>
+</div>
+<!-- Paused state -->
+<div class="flex items-center justify-between pb-1.5 border-b border-slate-100">
+<div>
+<div class="text-[9px] uppercase tracking-wider text-amber-600 font-bold">PAUSED</div>
+<div class="text-[10px] text-slate-500 font-medium">01:04:25 remaining</div>
+</div>
+<button class="px-2 py-0.5 text-[10px] font-bold text-brand-600 border border-brand-200 rounded hover:bg-brand-50">RESUME</button>
+</div>
+<!-- Completed state -->
+<div class="pb-1.5 border-b border-slate-100">
+<div class="text-[9px] uppercase tracking-wider text-slate-400 font-semibold">COMPLETED</div>
+<div class="text-[11px] font-bold text-emerald-600 flex items-center gap-1">✓ COMPLETE</div>
+<div class="text-[10px] text-slate-500 mt-0.5">Planned: 90 min <span class="text-slate-300">|</span> Actual: 84 min</div>
+</div>
+<!-- Overtime state -->
+<div>
+<div class="text-[9px] uppercase tracking-wider text-red-500 font-semibold">OVERTIME</div>
+<div class="text-[11px] font-bold text-red-600 flex items-center gap-1">⚠ Planned time exceeded</div>
+<div class="text-[10px] font-semibold text-red-700">+12 min</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- END: Section2_MiddleStatusGrid -->
+<!-- BEGIN: Section3_BottomRow -->
+<section class="grid grid-cols-1 lg:grid-cols-12 gap-4" data-purpose="row-3-toasts-and-dialog">
+<!-- Notification States (Toasts) - 7 cols -->
+<div class="lg:col-span-7 bg-white rounded-xl border border-[#E2E5E9] p-4 shadow-sm">
+<div class="text-[10px] uppercase font-bold tracking-wider text-slate-400 mb-3">NOTIFICATION STATES (TOASTS)</div>
+<div class="space-y-2">
+<!-- Toast 1 -->
+<div class="flex items-center gap-2.5 px-3 py-2 rounded-lg bg-indigo-50/70 border border-indigo-100 text-xs text-indigo-900 font-medium">
+<span class="w-2 h-2 rounded-full bg-brand-600 shrink-0"></span>
+<span>EDC Revision starts in 10 minutes.</span>
+</div>
+<!-- Toast 2 -->
+<div class="flex items-center gap-2.5 px-3 py-2 rounded-lg bg-indigo-50/70 border border-indigo-100 text-xs text-indigo-900 font-medium">
+<svg class="w-3.5 h-3.5 text-brand-600 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24"><path d="M12 8v4l3 3m6-3a9 9 0 1 1-18 0 9 9 0 0 1 18 0z"></path></svg>
+<span>EDC Revision starts now.</span>
+</div>
+<!-- Toast 3 -->
+<div class="flex items-center gap-2.5 px-3 py-2 rounded-lg bg-amber-50 border border-amber-200 text-xs text-amber-900 font-medium">
+<span class="text-amber-600">⏱</span>
+<span>10 minutes remaining.</span>
+</div>
+<!-- Toast 4 -->
+<div class="flex items-center gap-2.5 px-3 py-2 rounded-lg bg-emerald-50 border border-emerald-200 text-xs text-emerald-900 font-medium">
+<span class="text-emerald-600 font-bold">✓</span>
+<span>Task completed.</span>
+</div>
+<!-- Toast 5 -->
+<div class="flex items-center gap-2.5 px-3 py-2 rounded-lg bg-emerald-50 border border-emerald-200 text-xs text-emerald-900 font-medium">
+<span class="text-emerald-600 font-bold">✓</span>
+<span>Plan fixed successfully.</span>
+</div>
+<!-- Toast 6 -->
+<div class="flex items-center gap-2.5 px-3 py-2 rounded-lg bg-emerald-50 border border-emerald-200 text-xs text-emerald-900 font-medium">
+<span class="text-emerald-600 font-bold">✓</span>
+<span>Backup created successfully.</span>
+</div>
+</div>
+</div>
+<!-- Confirmation Dialog Example - 5 cols -->
+<div class="lg:col-span-5 bg-white rounded-xl border border-[#E2E5E9] p-5 shadow-sm flex flex-col justify-between">
+<div>
+<div class="text-[10px] uppercase font-bold tracking-wider text-slate-400 mb-4">CONFIRMATION DIALOG EXAMPLE</div>
+<div class="p-4 rounded-xl border border-slate-200 bg-slate-50/50">
+<h3 class="text-sm font-bold text-slate-900 mb-1">Fix this plan?</h3>
+<p class="text-xs text-slate-500 mb-6">
+                This will create your executable schedule.
+              </p>
+<div class="flex items-center justify-end gap-2.5">
+<button class="px-4 py-1.5 text-xs font-semibold text-slate-600 bg-white border border-slate-300 rounded-lg hover:bg-slate-50 transition-colors">
+                  CANCEL
+                </button>
+<button class="px-4 py-1.5 text-xs font-semibold text-white bg-brand-600 rounded-lg hover:bg-brand-700 transition-colors shadow-sm">
+                  FIX PLAN
+                </button>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- END: Section3_BottomRow -->
+<!-- BEGIN: Section4_MobileResponsiveReferences -->
+<section class="pt-2" data-purpose="mobile-responsive-patterns">
+<div class="mb-4">
+<h2 class="text-xs font-bold uppercase tracking-wider text-slate-800">MOBILE RESPONSIVE REFERENCES</h2>
+<p class="text-xs text-slate-500">How key screens adapt on mobile.</p>
+</div>
+<!-- 6 Mobile Viewport Mockups Grid -->
+<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+<!-- Mockup 1: Today -->
+<div class="bg-white rounded-xl border border-[#E2E5E9] p-3 shadow-sm flex flex-col justify-between min-h-[220px]">
+<div>
+<div class="text-[11px] font-bold text-slate-800 mb-2">Today</div>
+<div class="flex items-center gap-1.5 text-[10px] text-slate-500 bg-slate-50 p-1 rounded border border-slate-200/60 mb-2">
+<span>📅</span>
+<span>31 Aug 2026</span>
+</div>
+<div class="text-[9px] text-slate-400 font-semibold uppercase">Main Outcome</div>
+<div class="text-[10px] font-medium text-slate-800 leading-snug mb-2">Complete EDC revision</div>
+<div class="text-[9px] text-slate-400 font-semibold uppercase">Planned Time</div>
+<div class="text-xs font-bold text-slate-900">4h 30m</div>
+</div>
+<button class="w-full py-1 text-[10px] font-semibold text-brand-600 bg-brand-50 border border-brand-200 rounded mt-2">
+              View Plan
+            </button>
+</div>
+<!-- Mockup 2: Brain Dump -->
+<div class="bg-white rounded-xl border border-[#E2E5E9] p-3 shadow-sm flex flex-col justify-between min-h-[220px]">
+<div>
+<div class="text-[11px] font-bold text-slate-800 mb-2">Brain Dump</div>
+<div class="flex items-center gap-1 text-[9px] text-slate-400 mb-2">
+<span>📝</span>
+<span>Quick capture</span>
+</div>
+<div class="bg-slate-50 p-2 rounded border border-slate-100 text-[10px] text-slate-700 space-y-1">
+<div class="font-semibold text-slate-800">EDC revision</div>
+<div class="text-slate-500 text-[9px] leading-tight">Struggling with TRAKAE parser.</div>
+</div>
+</div>
+<button class="w-full py-1 text-[10px] font-semibold text-slate-600 bg-slate-50 border border-slate-200 rounded hover:bg-slate-100 mt-2">
+              Add more...
+            </button>
+</div>
+<!-- Mockup 3: Plan Review -->
+<div class="bg-white rounded-xl border border-[#E2E5E9] p-3 shadow-sm flex flex-col justify-between min-h-[220px]">
+<div>
+<div class="flex items-center justify-between mb-1.5">
+<div class="text-[11px] font-bold text-slate-800">Plan Review</div>
+<span class="text-[8px] bg-emerald-50 text-emerald-600 font-bold px-1 rounded border border-emerald-200">✓ Feasible</span>
+</div>
+<div class="grid grid-cols-2 text-[9px] text-slate-500 mb-2 pb-1 border-b border-slate-100">
+<div>Total Tasks <span class="font-bold text-slate-800 block text-[10px]">6</span></div>
+<div>Planned Time <span class="font-bold text-slate-800 block text-[10px]">4h 30m</span></div>
+</div>
+<div class="space-y-1 text-[9px]">
+<div class="flex items-center gap-1">
+<span class="bg-red-500 text-white font-bold px-1 rounded-[3px] text-[8px]">P1</span>
+<span class="font-medium text-slate-700 truncate">EDC Revision</span>
+</div>
+<div class="text-[8px] text-slate-400 pl-4">4:30 PM - 6:00 PM</div>
+<div class="flex items-center gap-1 pt-0.5">
+<span class="bg-amber-500 text-white font-bold px-1 rounded-[3px] text-[8px]">P2</span>
+<span class="font-medium text-slate-700 truncate">TRAKAE Parser</span>
+</div>
+<div class="text-[8px] text-slate-400 pl-4">7:30 PM - 9:00 PM</div>
+</div>
+</div>
+<button class="w-full py-1 text-[10px] font-semibold text-brand-600 bg-brand-50 border border-brand-200 rounded mt-2">
+              View Full Plan
+            </button>
+</div>
+<!-- Mockup 4: Task Execution -->
+<div class="bg-white rounded-xl border border-[#E2E5E9] p-3 shadow-sm flex flex-col justify-between min-h-[220px]">
+<div>
+<div class="text-[11px] font-bold text-slate-800 mb-1">Task Execution</div>
+<div class="text-[10px] font-semibold text-slate-800">EDC Revision</div>
+<span class="inline-block text-[8px] bg-indigo-50 text-brand-600 font-medium px-1 rounded mb-2">Focus Work</span>
+<div class="text-center my-2">
+<div class="text-sm font-mono font-bold text-slate-900 tracking-tight">01:17:42</div>
+<div class="text-[8px] text-slate-400 uppercase">remaining</div>
+</div>
+<div class="grid grid-cols-2 gap-1 mb-2">
+<button class="py-0.5 text-[9px] font-bold text-slate-600 border border-slate-200 rounded">PAUSE</button>
+<button class="py-0.5 text-[9px] font-bold text-white bg-brand-600 rounded">COMPLETE</button>
+</div>
+</div>
+<div>
+<div class="flex justify-between text-[8px] text-slate-400 mb-0.5">
+<span>Checklist</span>
+<span class="font-bold text-slate-700">3/4</span>
+</div>
+<div class="w-full bg-slate-100 h-1 rounded-full overflow-hidden">
+<div class="bg-brand-600 h-full w-3/4"></div>
+</div>
+</div>
+</div>
+<!-- Mockup 5: Analytics -->
+<div class="bg-white rounded-xl border border-[#E2E5E9] p-3 shadow-sm flex flex-col justify-between min-h-[220px]">
+<div>
+<div class="text-[11px] font-bold text-slate-800 mb-1">Analytics</div>
+<div class="text-[9px] text-slate-400">Completion Rate</div>
+<div class="text-xs font-bold text-slate-900 mb-1">67%</div>
+<div class="text-[9px] text-slate-400">Focus Time</div>
+<div class="text-xs font-bold text-slate-900 mb-2">18h 24m</div>
+<!-- Mini Bar Chart -->
+<div class="flex items-end justify-between h-10 gap-1 px-1 pt-2 border-b border-slate-200">
+<div class="w-1.5 bg-brand-300 h-4 rounded-t-xs"></div>
+<div class="w-1.5 bg-brand-400 h-6 rounded-t-xs"></div>
+<div class="w-1.5 bg-brand-600 h-8 rounded-t-xs"></div>
+<div class="w-1.5 bg-brand-200 h-3 rounded-t-xs"></div>
+<div class="w-1.5 bg-brand-500 h-7 rounded-t-xs"></div>
+<div class="w-1.5 bg-brand-300 h-4 rounded-t-xs"></div>
+<div class="w-1.5 bg-brand-400 h-5 rounded-t-xs"></div>
+</div>
+<div class="flex justify-between text-[7px] text-slate-400 mt-1">
+<span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span><span>S</span>
+</div>
+</div>
+<button class="w-full py-1 text-[10px] font-semibold text-slate-600 bg-slate-50 border border-slate-200 rounded hover:bg-slate-100 mt-2">
+              View More
+            </button>
+</div>
+<!-- Mockup 6: Settings -->
+<div class="bg-white rounded-xl border border-[#E2E5E9] p-3 shadow-sm flex flex-col justify-between min-h-[220px]">
+<div class="space-y-1.5">
+<div class="text-[11px] font-bold text-slate-800 mb-1">Settings</div>
+<div class="flex justify-between items-center text-[9px]">
+<span class="text-slate-500">Work Start</span>
+<span class="font-medium text-slate-800">9:00 AM</span>
+</div>
+<div class="flex justify-between items-center text-[9px]">
+<span class="text-slate-500">Work End</span>
+<span class="font-medium text-slate-800">10:00 PM</span>
+</div>
+<div class="flex justify-between items-center text-[9px]">
+<span class="text-slate-500">Timezone</span>
+<span class="font-medium text-slate-800">Local Time</span>
+</div>
+<div class="flex justify-between items-center text-[9px]">
+<span class="text-slate-500">AI Provider</span>
+<span class="font-semibold text-slate-800">Ollama</span>
+</div>
+</div>
+<!-- Notifications Toggle -->
+<div class="pt-2 border-t border-slate-100 flex items-center justify-between">
+<span class="text-[9px] font-medium text-slate-600">Notifications</span>
+<!-- Active switch mock -->
+<div class="w-6 h-3.5 bg-brand-600 rounded-full flex items-center p-0.5 justify-end cursor-pointer">
+<div class="w-2.5 h-2.5 bg-white rounded-full shadow"></div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- END: Section4_MobileResponsiveReferences -->
+</div>
+</main>
+<!-- END: MainContentArea -->
+</body></html>

@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>FlowDesk - Task Execution + Timer + Checklist</title>
+<!-- Tailwind CSS CDN with forms and container queries plugins -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Configuration -->
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#f5f3ff',
+              100: '#ede9fe',
+              500: '#6366f1',
+              600: '#4f46e5',
+              700: '#4338ca',
+            },
+            priority: {
+              p1: '#ef4444',
+              p2: '#f97316',
+              p3: '#eab308',
+              p4: '#22c55e',
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+<!-- Typography & Layout Custom Styles -->
+<style data-purpose="custom-layout">
+    body {
+      background-color: #f8fafc;
+      color: #0f172a;
+      -webkit-font-smoothing: antialiased;
+    }
+    /* Circular timer SVG dash math for 90min with ~12min elapsed (~86% left) */
+    .timer-track {
+      stroke: #f1f5f9;
+    }
+    .timer-progress {
+      stroke: #ef4444;
+      stroke-dasharray: 565.48; /* 2 * PI * 90 */
+      stroke-dashoffset: 84.8;  /* ~85% remaining circle */
+      transition: stroke-dashoffset 0.5s ease;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex bg-slate-50 text-slate-800 antialiased">
+<!-- BEGIN: LeftSidebar -->
+<aside class="w-64 flex-shrink-0 bg-white border-r border-slate-200 flex flex-col justify-between min-h-screen py-5 px-4 select-none">
+<!-- Top Navigation Section -->
+<div class="space-y-6">
+<!-- FlowDesk Branding -->
+<div class="flex items-center gap-2.5 px-2">
+<div class="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center text-white font-bold text-base shadow-sm">
+          E3
+        </div>
+<span class="font-bold text-slate-900 text-lg tracking-tight">FlowDesk</span>
+</div>
+<!-- Navigation Links -->
+<nav aria-label="Main Navigation" class="space-y-1 text-sm font-medium">
+<!-- Active 'Today' Navigation -->
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-indigo-50 text-indigo-700 font-semibold transition-colors" href="#">
+<svg class="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span>Today</span>
+</a>
+<!-- Brain Dump -->
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-colors" href="#">
+<svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span>Brain Dump</span>
+</a>
+<!-- Tasks -->
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-colors" href="#">
+<svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span>Tasks</span>
+</a>
+<!-- Analytics -->
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-colors" href="#">
+<svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span>Analytics</span>
+</a>
+<!-- Settings -->
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-colors" href="#">
+<svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" stroke-linecap="round" stroke-linejoin="round"></path>
+<path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span>Settings</span>
+</a>
+<!-- Backup -->
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-colors" href="#">
+<svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span>Backup</span>
+</a>
+</nav>
+</div>
+<!-- Bottom Sidebar Widgets: AI Provider & Profile -->
+<div class="space-y-3 pt-4">
+<!-- AI Provider Card -->
+<div class="rounded-xl border border-slate-200/80 bg-slate-50/60 p-3 text-xs">
+<div class="text-[11px] font-medium text-slate-400 uppercase tracking-wider mb-1.5">AI Provider</div>
+<div class="flex items-center gap-1.5 font-semibold text-slate-800">
+<span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+<span>Ollama</span>
+</div>
+<div class="mt-2 text-slate-400 text-[11px]">Model</div>
+<div class="text-xs font-semibold text-slate-700 tracking-tight">qwen3.5:9b</div>
+</div>
+<!-- User Profile Dropdown -->
+<button aria-label="User Account Menu" class="w-full flex items-center justify-between p-2 rounded-lg hover:bg-slate-100 transition-colors text-left">
+<div class="flex items-center gap-2.5">
+<div class="w-8 h-8 rounded-full bg-indigo-900 text-white font-semibold flex items-center justify-center text-xs">
+            D
+          </div>
+<span class="text-sm font-semibold text-slate-800">Dinesh</span>
+</div>
+<svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M19 9l-7 7-7-7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</button>
+</div>
+</aside>
+<!-- END: LeftSidebar -->
+<!-- BEGIN: MainExecutionCockpit -->
+<main class="flex-1 flex flex-col min-w-0 overflow-y-auto">
+<!-- Top Navigation / Status Header Bar -->
+<header class="w-full border-b border-slate-200/80 bg-white/70 backdrop-blur-md px-8 py-4 flex items-center justify-between sticky top-0 z-20">
+<!-- Status Badge -->
+<div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-bold uppercase tracking-wider">
+<svg class="w-3.5 h-3.5 text-emerald-600" fill="none" stroke="currentColor" stroke-width="3" viewbox="0 0 24 24">
+<path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span>FIXED – READY TO EXECUTE</span>
+</div>
+<!-- Clock & Notifications -->
+<div class="flex items-center gap-4">
+<span class="text-sm font-semibold text-slate-700">4:48 PM</span>
+<button aria-label="Notifications" class="relative p-1.5 text-slate-500 hover:text-slate-800 transition-colors rounded-full">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<path d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="absolute top-0 right-0 w-4 h-4 bg-indigo-600 text-white rounded-full text-[10px] font-bold flex items-center justify-center">
+            2
+          </span>
+</button>
+</div>
+</header>
+<!-- Main Content Body -->
+<div class="px-8 py-6 max-w-6xl w-full mx-auto space-y-6">
+<!-- View Title & Schedule Link -->
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+<div>
+<h1 class="text-2xl font-bold text-slate-900 tracking-tight">Execute Your Plan</h1>
+<p class="text-sm text-slate-500 mt-0.5">Stay focused. Complete one task at a time.</p>
+</div>
+<button class="inline-flex items-center gap-2 px-4 py-2 border border-slate-300 rounded-lg text-xs font-semibold text-slate-700 bg-white hover:bg-slate-50 shadow-sm transition">
+<svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<path d="M4 6h16M4 10h16M4 14h16M4 18h16" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span>View Full Schedule</span>
+</button>
+</div>
+<!-- BEGIN: CurrentTaskHeroContainer -->
+<section class="bg-white rounded-2xl border border-slate-200/90 shadow-sm overflow-hidden" data-purpose="current-task-hero">
+<!-- Header row with Focus Mode Toggle -->
+<div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-white">
+<span class="text-xs font-bold uppercase tracking-wider text-rose-600">Current Task</span>
+<div class="flex items-center gap-3">
+<span class="text-xs font-semibold text-slate-600">Focus Mode</span>
+<!-- Toggle Switch (ON) -->
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox"/>
+<div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div>
+</label>
+</div>
+</div>
+<!-- Task Info & Expected Outcome -->
+<div class="p-6 space-y-6">
+<div class="flex flex-wrap items-center justify-between gap-3">
+<div class="flex items-center gap-3">
+<span class="px-2.5 py-1 bg-red-600 text-white rounded-md text-xs font-bold">P1</span>
+<h2 class="text-xl font-bold text-slate-900">EDC Revision</h2>
+</div>
+<span class="px-3 py-1 bg-indigo-50 text-indigo-700 text-xs font-medium rounded-full border border-indigo-100">Focus Work</span>
+</div>
+<!-- Time Subline -->
+<div class="flex items-center gap-2 text-xs font-medium text-slate-500 -mt-3">
+<svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<circle cx="12" cy="12" r="10"></circle>
+<path d="M12 6v6l4 2" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span>4:30 PM – 6:00 PM (90 min)</span>
+</div>
+<!-- Expected Result Callout -->
+<div class="text-xs font-normal">
+<div class="font-bold text-rose-600 mb-0.5">Expected result</div>
+<div class="text-slate-800 text-sm font-medium">Complete Diode topic + solve 5 problems.</div>
+</div>
+<!-- Execution Center: Circular Timer + Checklist -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8 pt-2">
+<!-- LEFT: Circular Gauge Timer & Durations (7 cols) -->
+<div class="lg:col-span-7 flex flex-col sm:flex-row items-center justify-center sm:justify-start gap-8 bg-slate-50/50 rounded-xl p-6 border border-slate-100">
+<!-- Circular Progress Gauge -->
+<div class="relative w-48 h-48 flex-shrink-0 flex items-center justify-center">
+<svg class="w-full h-full transform -rotate-90" viewbox="0 0 200 200">
+<circle class="timer-track" cx="100" cy="100" fill="none" r="90" stroke-width="9"></circle>
+<circle class="timer-progress" cx="100" cy="100" fill="none" r="90" stroke-linecap="round" stroke-width="9"></circle>
+</svg>
+<!-- Timer Text Inside Circle -->
+<div class="absolute inset-0 flex flex-col items-center justify-center text-center select-none pointer-events-none">
+<span class="text-3xl font-extrabold text-slate-900 tracking-tight font-mono">01:17:42</span>
+<span class="text-xs font-medium text-slate-400 mt-1">remaining</span>
+</div>
+</div>
+<!-- Timer Metrics Details -->
+<div class="space-y-3.5 w-full max-w-[200px] text-left">
+<div>
+<div class="text-[11px] font-medium text-slate-400">Planned Duration</div>
+<div class="text-sm font-bold text-slate-800">90 min</div>
+</div>
+<div>
+<div class="text-[11px] font-medium text-slate-400">Elapsed Time</div>
+<div class="text-sm font-bold text-slate-800 font-mono">12:18</div>
+</div>
+<div>
+<div class="text-[11px] font-medium text-slate-400">End Time</div>
+<div class="text-sm font-bold text-slate-800">6:00 PM</div>
+</div>
+<button class="inline-flex items-center gap-1.5 px-3 py-1.5 border border-slate-300 rounded-lg text-xs font-semibold text-slate-700 bg-white hover:bg-slate-50 transition shadow-sm mt-1">
+<svg class="w-3.5 h-3.5 text-slate-500" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<circle cx="12" cy="12" r="10"></circle>
+<path d="M12 6v6l4 2" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span>Adjust Time</span>
+</button>
+</div>
+</div>
+<!-- RIGHT: Checklist Widget (5 cols) -->
+<div class="lg:col-span-5 flex flex-col justify-between space-y-4">
+<div>
+<!-- Checklist Header & Progress Bar -->
+<div class="flex items-center justify-between text-xs mb-2">
+<span class="font-bold text-slate-900">Checklist</span>
+<span class="text-slate-500 font-medium text-[11px]">3 / 4 completed</span>
+</div>
+<!-- Progress Line Indicator -->
+<div class="w-full bg-slate-100 rounded-full h-1.5 mb-4 overflow-hidden">
+<div class="bg-rose-500 h-1.5 rounded-full" style="width: 75%"></div>
+</div>
+<!-- Checklist Items -->
+<div class="space-y-3">
+<!-- Checked Item 1 -->
+<label class="flex items-center gap-3 cursor-pointer group select-none">
+<input checked="" class="w-4 h-4 rounded text-indigo-600 focus:ring-indigo-500 border-slate-300" type="checkbox"/>
+<span class="text-xs font-medium text-slate-700 line-through text-slate-400">Review concept</span>
+</label>
+<!-- Checked Item 2 -->
+<label class="flex items-center gap-3 cursor-pointer group select-none">
+<input checked="" class="w-4 h-4 rounded text-indigo-600 focus:ring-indigo-500 border-slate-300" type="checkbox"/>
+<span class="text-xs font-medium text-slate-700 line-through text-slate-400">Study formulas</span>
+</label>
+<!-- Unchecked Item 3 -->
+<label class="flex items-center gap-3 cursor-pointer group select-none">
+<input class="w-4 h-4 rounded text-indigo-600 focus:ring-indigo-500 border-slate-300" type="checkbox"/>
+<span class="text-xs font-medium text-slate-700">Solve 5 problems</span>
+</label>
+<!-- Unchecked Item 4 -->
+<label class="flex items-center gap-3 cursor-pointer group select-none">
+<input class="w-4 h-4 rounded text-indigo-600 border-slate-300" type="checkbox"/>
+<span class="text-xs font-medium text-slate-700">Recall without notes</span>
+</label>
+</div>
+</div>
+<!-- Add Checklist Link -->
+<button class="flex items-center gap-1.5 text-xs font-semibold text-indigo-600 hover:text-indigo-700 transition self-start pt-2">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<path d="M12 4v16m8-8H4" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span>Add Checklist Item</span>
+</button>
+</div>
+</div>
+<!-- Primary Action Execution Buttons (3 cards) -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4 border-t border-slate-100">
+<!-- Pause Button -->
+<button class="flex flex-col items-center justify-center p-3.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 transition shadow-sm text-center">
+<div class="flex items-center gap-2 font-bold text-slate-800 text-sm">
+<svg class="w-4 h-4 text-indigo-600" fill="currentColor" viewbox="0 0 24 24">
+<path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z"></path>
+</svg>
+<span>Pause</span>
+</div>
+<span class="text-[11px] text-slate-500 mt-0.5">Take a short break</span>
+</button>
+<!-- Complete Task (Dominant Primary Button) -->
+<button class="flex flex-col items-center justify-center p-3.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 transition shadow text-center text-white">
+<div class="flex items-center gap-2 font-bold text-sm">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewbox="0 0 24 24">
+<path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span>Complete Task</span>
+</div>
+<span class="text-[11px] text-indigo-100 mt-0.5">Mark as done</span>
+</button>
+<!-- Postpone Button -->
+<button class="flex flex-col items-center justify-center p-3.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 transition shadow-sm text-center">
+<div class="flex items-center gap-2 font-bold text-slate-800 text-sm">
+<svg class="w-4 h-4 text-indigo-600" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<path d="M13 5l7 7-7 7M5 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span>Postpone</span>
+</div>
+<span class="text-[11px] text-slate-500 mt-0.5">Move this task</span>
+</button>
+</div>
+</div>
+</section>
+<!-- END: CurrentTaskHeroContainer -->
+<!-- BEGIN: NextUpContainer -->
+<section class="space-y-2" data-purpose="next-up-task">
+<span class="text-xs font-bold uppercase tracking-wider text-slate-500">Next Up</span>
+<div class="bg-white rounded-xl border border-slate-200 p-4 flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-sm">
+<div class="space-y-1">
+<div class="flex items-center gap-2.5">
+<span class="px-2 py-0.5 bg-orange-500 text-white rounded text-xs font-bold">P2</span>
+<h3 class="font-bold text-slate-900 text-base">TRAKAE Parser</h3>
+</div>
+<div class="flex items-center gap-1.5 text-xs text-slate-500 font-medium">
+<svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<circle cx="12" cy="12" r="10"></circle>
+<path d="M12 6v6l4 2" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span>7:30 PM – 9:00 PM (90 min)</span>
+</div>
+<p class="text-xs text-slate-600 pt-0.5">Fix CSV mapping and verify parser output.</p>
+</div>
+<!-- Countdown to Next Task -->
+<div class="md:text-right border-t md:border-t-0 pt-3 md:pt-0 border-slate-100">
+<div class="text-[11px] text-slate-400 font-medium uppercase tracking-wider">Starts in</div>
+<div class="text-2xl font-black text-slate-900 font-mono tracking-tight">02:42:18</div>
+</div>
+</div>
+</section>
+<!-- END: NextUpContainer -->
+<!-- BEGIN: TodaysProgressContainer -->
+<section class="bg-white rounded-xl border border-slate-200 p-5 shadow-sm" data-purpose="todays-progress">
+<h4 class="text-xs font-bold uppercase tracking-wider text-slate-500 mb-4">Today's Progress</h4>
+<div class="grid grid-cols-2 md:grid-cols-4 gap-6 divide-y md:divide-y-0 md:divide-x divide-slate-100">
+<!-- Metric 1: Tasks Completed -->
+<div class="pt-2 md:pt-0 md:px-3 first:pl-0 space-y-1">
+<span class="text-[11px] text-slate-400 font-medium">Tasks Completed</span>
+<div class="flex items-baseline gap-2">
+<span class="text-xl font-extrabold text-slate-900">1 / 6</span>
+<span class="text-xs text-slate-400 font-medium">(17%)</span>
+</div>
+<div class="w-full bg-slate-100 rounded-full h-1.5 mt-2">
+<div class="bg-emerald-500 h-1.5 rounded-full" style="width: 17%"></div>
+</div>
+</div>
+<!-- Metric 2: Focus Time -->
+<div class="pt-2 md:pt-0 md:px-3 space-y-1">
+<span class="text-[11px] text-slate-400 font-medium">Focus Time</span>
+<div class="text-xl font-extrabold text-slate-900 font-mono">01:12:18</div>
+</div>
+<!-- Metric 3: Actual vs Planned -->
+<div class="pt-2 md:pt-0 md:px-3 space-y-1">
+<span class="text-[11px] text-slate-400 font-medium">Actual vs Planned</span>
+<div class="text-xl font-bold text-emerald-600">On Track</div>
+</div>
+<!-- Metric 4: Plan Buffer -->
+<div class="pt-2 md:pt-0 md:px-3 space-y-1">
+<span class="text-[11px] text-slate-400 font-medium">Plan Buffer</span>
+<div class="flex items-baseline gap-2">
+<span class="text-xl font-extrabold text-slate-900 font-mono">02:30</span>
+<span class="text-xs text-slate-400 font-medium">(42%)</span>
+</div>
+<div class="w-full bg-slate-100 rounded-full h-1.5 mt-2">
+<div class="bg-indigo-600 h-1.5 rounded-full" style="width: 42%"></div>
+</div>
+</div>
+</div>
+</section>
+<!-- END: TodaysProgressContainer -->
+<!-- BEGIN: BottomGuidanceDock -->
+<footer class="rounded-xl border border-indigo-100 bg-indigo-50/40 p-4 flex flex-col sm:flex-row items-center justify-between gap-4" data-purpose="encouragement-and-review">
+<!-- Motivational Message -->
+<div class="flex items-center gap-3 text-center sm:text-left">
+<div class="w-9 h-9 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center flex-shrink-0">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</div>
+<div>
+<p class="text-xs font-semibold text-slate-800">Stay focused on one thing at a time.</p>
+<p class="text-xs text-slate-500">You've got this, Dinesh! 🚀</p>
+</div>
+</div>
+<!-- End Day Review CTA Button -->
+<button class="inline-flex items-center gap-2 px-4 py-2 border border-slate-300 rounded-lg text-xs font-semibold text-slate-700 bg-white hover:bg-slate-50 shadow-sm transition">
+<svg class="w-4 h-4 text-indigo-600" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span>End Day Review</span>
+</button>
+</footer>
+<!-- END: BottomGuidanceDock -->
+</div>
+</main>
+<!-- END: MainExecutionCockpit -->
+</body></html>

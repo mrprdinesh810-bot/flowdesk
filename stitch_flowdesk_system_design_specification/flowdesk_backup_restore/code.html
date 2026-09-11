@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+
+<html class="h-full bg-[#F8F9FA]" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>FlowDesk — Backup &amp; Restore</title>
+<!-- Google Fonts: Inter -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS v3 with Plugins -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              50: '#EEF2FF',
+              100: '#E0E7FF',
+              600: '#4F46E5',
+              700: '#4338CA',
+            },
+            surface: '#FFFFFF',
+            borderLight: '#E5E7EB',
+            bgBase: '#F8F9FA',
+          }
+        }
+      }
+    }
+  </script>
+<style data-purpose="custom-typography-and-scroll">
+    body {
+      font-family: 'Inter', sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+  </style>
+</head>
+<body class="h-full text-slate-800 bg-[#F8F9FA] flex overflow-hidden">
+<!-- BEGIN: NavigationSidebar -->
+<aside class="w-60 bg-white border-r border-slate-200 flex flex-col justify-between flex-shrink-0 z-20" data-purpose="sidebar-navigation">
+<!-- Top Branding & Nav Menu -->
+<div class="p-5 flex flex-col gap-6">
+<!-- FlowDesk Logo -->
+<div class="flex items-center gap-2.5 px-2">
+<div class="w-7 h-7 rounded-lg bg-indigo-600 flex items-center justify-center text-white font-bold text-base shadow-sm">
+          F
+        </div>
+<span class="font-bold text-lg text-slate-900 tracking-tight">FlowDesk</span>
+</div>
+<!-- Navigation Links -->
+<nav aria-label="Main Navigation" class="flex flex-col space-y-1">
+<!-- Today Link -->
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition font-medium text-sm" href="#">
+<svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+          Today
+        </a>
+<!-- Brain Dump Link -->
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition font-medium text-sm" href="#">
+<svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<rect height="18" rx="2" stroke-width="2" width="18" x="3" y="3"></rect>
+<path d="M9 9h6m-6 3h6m-6 3h4" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+          Brain Dump
+        </a>
+<!-- Tasks Link -->
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition font-medium text-sm" href="#">
+<svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+          Tasks
+        </a>
+<!-- Analytics Link -->
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition font-medium text-sm" href="#">
+<svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M16 8v8m-4-5v5m-4-2v2m-2 4h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+          Analytics
+        </a>
+<!-- Settings Link -->
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition font-medium text-sm" href="#">
+<svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+<circle cx="12" cy="12" r="3" stroke-width="2"></circle>
+</svg>
+          Settings
+        </a>
+<!-- Backup Link (Active State) -->
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg bg-indigo-50/80 text-indigo-700 font-semibold text-sm transition shadow-[inset_0px_0px_0px_1px_rgba(99,102,241,0.1)]" href="#">
+<svg class="w-4 h-4 text-indigo-600" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M12 4v1m6 11h2m-6 0h-4v4m0-4v-4m-4 4H4m16-4a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+          Backup
+        </a>
+</nav>
+</div>
+<!-- Bottom Metadata & Profile -->
+<div class="p-4 border-t border-slate-100 flex flex-col gap-3">
+<!-- AI Provider Status Box -->
+<div class="bg-slate-50 border border-slate-200/80 rounded-lg p-3 text-xs flex flex-col gap-1.5" data-purpose="ai-provider-badge">
+<div class="text-slate-400 font-medium tracking-wide">AI Provider</div>
+<div class="flex items-center gap-1.5 font-semibold text-slate-800">
+<span class="w-2 h-2 rounded-full bg-emerald-500 inline-block"></span>
+          Ollama
+        </div>
+<div class="text-[11px] text-slate-500 font-medium pt-0.5">
+          Model: <span class="text-slate-800 font-mono font-medium">qwen3.5:9b</span>
+</div>
+</div>
+<!-- User Profile Element -->
+<button aria-haspopup="true" class="w-full flex items-center justify-between p-1.5 rounded-lg hover:bg-slate-50 transition text-left" type="button">
+<div class="flex items-center gap-2.5">
+<div class="w-7 h-7 rounded-full bg-indigo-950 text-white flex items-center justify-center font-bold text-xs">
+            D
+          </div>
+<span class="text-xs font-semibold text-slate-800">Dinesh</span>
+</div>
+<svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M19 9l-7 7-7-7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</button>
+</div>
+</aside>
+<!-- END: NavigationSidebar -->
+<!-- BEGIN: MainContentArea -->
+<div class="flex-1 flex flex-col h-full overflow-hidden">
+<!-- Top System Header Bar -->
+<header class="px-8 pt-7 pb-4 flex items-start justify-between flex-shrink-0" data-purpose="page-header">
+<div>
+<h1 class="text-xl font-bold text-slate-900 tracking-tight">Backup &amp; Restore</h1>
+<p class="text-xs text-slate-500 mt-1 font-normal">Create a portable backup of your local FlowDesk data or restore an existing backup.</p>
+</div>
+<!-- Top Right Clock & Notification -->
+<div class="flex items-center gap-4 text-xs font-medium text-slate-500">
+<span class="text-slate-700 tracking-wide font-medium">10:20 PM</span>
+<div class="relative cursor-pointer hover:text-slate-700 transition">
+<svg class="w-5 h-5 text-slate-600" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"></path>
+</svg>
+<span class="absolute -top-1 -right-1 bg-indigo-600 text-white font-bold text-[9px] w-3.5 h-3.5 flex items-center justify-center rounded-full ring-2 ring-white">2</span>
+</div>
+</div>
+</header>
+<!-- Scrollable Body Cards Grid -->
+<main class="flex-1 overflow-y-auto px-8 pb-8 pt-2" data-purpose="dashboard-grid">
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+<!-- ================= ROW 1 ================= -->
+<!-- Card 1: Local Data -->
+<article class="bg-white rounded-xl border border-slate-200/90 p-5 shadow-[0_1px_2px_rgba(0,0,0,0.03)] flex flex-col justify-between" data-purpose="local-data-card">
+<div>
+<h2 class="text-xs font-bold uppercase tracking-wider text-slate-800 mb-4">LOCAL DATA</h2>
+<div class="space-y-3 text-xs">
+<!-- Status Item -->
+<div class="flex items-center justify-between py-0.5">
+<span class="flex items-center gap-2 text-slate-500">
+<svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewbox="0 0 24 24"><circle cx="12" cy="12" r="9" stroke-width="2"></circle><circle cx="12" cy="12" r="3" stroke-width="2"></circle></svg>
+                  Status
+                </span>
+<span class="flex items-center gap-1.5 font-semibold text-slate-800">
+<span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                  Healthy
+                </span>
+</div>
+<!-- Storage Item -->
+<div class="flex items-center justify-between py-0.5">
+<span class="flex items-center gap-2 text-slate-500">
+<svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+                  Storage
+                </span>
+<span class="font-medium text-slate-800">Local</span>
+</div>
+<!-- Last Backup Item -->
+<div class="flex items-center justify-between py-0.5">
+<span class="flex items-center gap-2 text-slate-500">
+<svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+                  Last Backup
+                </span>
+<span class="font-medium text-slate-800">Today, 10:20 PM</span>
+</div>
+<!-- Tasks Item -->
+<div class="flex items-center justify-between py-0.5">
+<span class="flex items-center gap-2 text-slate-500">
+<svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+                  Tasks
+                </span>
+<span class="font-medium text-slate-800">42</span>
+</div>
+<!-- History Item -->
+<div class="flex items-center justify-between py-0.5">
+<span class="flex items-center gap-2 text-slate-500">
+<svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+                  History
+                </span>
+<span class="font-medium text-slate-800">30 days</span>
+</div>
+</div>
+</div>
+</article>
+<!-- Card 2: Export Backup -->
+<article class="bg-white rounded-xl border border-slate-200/90 p-5 shadow-[0_1px_2px_rgba(0,0,0,0.03)] flex flex-col justify-between" data-purpose="export-backup-card">
+<div>
+<h2 class="text-xs font-bold uppercase tracking-wider text-slate-800 mb-2">EXPORT BACKUP</h2>
+<p class="text-xs text-slate-500 mb-4 leading-relaxed">Create a portable ZIP backup containing your FlowDesk data.</p>
+<div class="space-y-2.5 text-xs">
+<div class="flex justify-between items-center py-0.5 text-slate-600">
+<span class="text-slate-500">Backup Format</span>
+<span class="font-mono text-slate-800 font-medium">v1</span>
+</div>
+<div class="flex justify-between items-center py-0.5 text-slate-600">
+<span class="text-slate-500">Schema Version</span>
+<span class="font-mono text-slate-800 font-medium">v1</span>
+</div>
+<div class="flex justify-between items-center py-0.5 text-slate-600">
+<span class="text-slate-500">Integrity</span>
+<span class="font-medium text-slate-800">SHA-256</span>
+</div>
+</div>
+</div>
+<button class="mt-5 w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded-lg text-xs tracking-wider transition uppercase shadow-sm" type="button">
+            EXPORT BACKUP
+          </button>
+</article>
+<!-- Card 3: Export Status -->
+<article class="bg-white rounded-xl border border-slate-200/90 p-5 shadow-[0_1px_2px_rgba(0,0,0,0.03)] flex flex-col" data-purpose="export-status-card">
+<h2 class="text-xs font-bold uppercase tracking-wider text-slate-800 mb-3">EXPORT STATUS</h2>
+<div class="flex items-center gap-2 text-emerald-600 font-semibold text-xs mb-3.5">
+<span class="w-4 h-4 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600 font-bold text-[10px]">✓</span>
+            Backup created successfully
+          </div>
+<!-- Downloadable File Details Box -->
+<div class="bg-slate-50/70 border border-slate-200 rounded-lg p-3 text-xs">
+<div class="flex items-center gap-2 font-medium text-slate-800">
+<svg class="w-4 h-4 text-slate-500 flex-shrink-0" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"></path>
+</svg>
+<span class="font-mono truncate text-[11.5px]">FlowDesk-Backup-2026-09-04.zip</span>
+</div>
+<div class="text-[11px] text-slate-400 mt-1 pl-6">2.4 MB</div>
+<div class="text-[11px] text-slate-500 mt-2.5 pt-2.5 border-t border-slate-200 font-medium">
+              SHA-256 verified
+            </div>
+</div>
+</article>
+<!-- ================= ROW 2 ================= -->
+<!-- Card 4: Import Backup -->
+<article class="bg-white rounded-xl border border-slate-200/90 p-5 shadow-[0_1px_2px_rgba(0,0,0,0.03)] flex flex-col justify-between" data-purpose="import-backup-card">
+<div>
+<h2 class="text-xs font-bold uppercase tracking-wider text-slate-800 mb-2">IMPORT BACKUP</h2>
+<p class="text-xs text-slate-500 leading-relaxed mb-4">Restore FlowDesk data from a previously exported ZIP backup.</p>
+<button class="w-full border border-indigo-200 hover:border-indigo-400 bg-white text-indigo-600 font-semibold py-2 px-4 rounded-lg text-xs tracking-wider transition uppercase hover:bg-indigo-50/50" type="button">
+              SELECT BACKUP
+            </button>
+</div>
+<p class="text-[11px] text-slate-400 mt-4 leading-relaxed">
+            Your current data will be validated before restore.
+          </p>
+</article>
+<!-- Card 5: Validation -->
+<article class="bg-white rounded-xl border border-slate-200/90 p-5 shadow-[0_1px_2px_rgba(0,0,0,0.03)] flex flex-col justify-between" data-purpose="validation-card">
+<div>
+<h2 class="text-xs font-bold uppercase tracking-wider text-slate-800 mb-1">VALIDATION</h2>
+<p class="text-[11.5px] text-slate-500 mb-3">Validating backup...</p>
+<ul class="space-y-1.5 text-xs">
+<li class="flex items-center gap-2 text-slate-700">
+<span class="text-emerald-600 font-bold text-xs">✓</span>
+<span>ZIP readable</span>
+</li>
+<li class="flex items-center gap-2 text-slate-700">
+<span class="text-emerald-600 font-bold text-xs">✓</span>
+<span>Manifest found</span>
+</li>
+<li class="flex items-center gap-2 text-slate-700">
+<span class="text-emerald-600 font-bold text-xs">✓</span>
+<span>Format compatible</span>
+</li>
+<li class="flex items-center gap-2 text-slate-700">
+<span class="text-emerald-600 font-bold text-xs">✓</span>
+<span>Schema compatible</span>
+</li>
+<li class="flex items-center gap-2 text-slate-700">
+<span class="text-emerald-600 font-bold text-xs">✓</span>
+<span>SHA-256 verified</span>
+</li>
+</ul>
+</div>
+<div class="mt-4">
+<span class="inline-block bg-emerald-50 text-emerald-700 font-medium text-xs px-3 py-1 rounded-md border border-emerald-200/80">
+              Ready to restore
+            </span>
+</div>
+</article>
+<!-- Card 6: Restore Confirmation -->
+<article class="bg-white rounded-xl border border-slate-200/90 p-5 shadow-[0_1px_2px_rgba(0,0,0,0.03)] flex flex-col justify-between" data-purpose="restore-confirmation-card">
+<div>
+<h2 class="text-xs font-bold uppercase tracking-wider text-slate-800 mb-3">RESTORE CONFIRMATION</h2>
+<div class="flex items-start gap-2 text-amber-600 font-semibold text-xs mb-2">
+<span class="w-4 h-4 rounded-full bg-amber-100 flex items-center justify-center text-amber-600 font-bold text-xs">!</span>
+              Restore this backup?
+            </div>
+<p class="text-xs text-slate-500 leading-relaxed pl-6">
+              Your existing local data will be protected until validation succeeds.
+            </p>
+</div>
+<!-- Action Buttons -->
+<div class="grid grid-cols-2 gap-2 mt-5">
+<button class="border border-slate-200 hover:border-slate-300 text-slate-700 font-semibold py-2 px-3 rounded-lg text-xs uppercase tracking-wider transition text-center" type="button">
+              CANCEL
+            </button>
+<button class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-2 rounded-lg text-xs uppercase tracking-wider transition text-center" type="button">
+              CONTINUE RESTORE
+            </button>
+</div>
+</article>
+<!-- ================= ROW 3 ================= -->
+<!-- Card 7: Backup Invalid -->
+<article class="bg-white rounded-xl border border-slate-200/90 p-5 shadow-[0_1px_2px_rgba(0,0,0,0.03)] flex flex-col justify-between" data-purpose="backup-invalid-card">
+<div>
+<div class="flex items-center gap-1.5 text-red-600 font-bold text-xs tracking-wider mb-2">
+<svg class="w-4 h-4 text-red-600" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+<span>BACKUP INVALID</span>
+</div>
+<p class="text-xs text-slate-500 mb-3">The backup could not be verified.</p>
+<div class="text-xs text-slate-500 mb-1 font-medium">Possible reasons:</div>
+<ul class="space-y-1 text-xs text-slate-600">
+<li class="flex items-center gap-2">
+<span class="text-red-500 leading-none">•</span>
+<span>corrupted archive</span>
+</li>
+<li class="flex items-center gap-2">
+<span class="text-red-500 leading-none">•</span>
+<span>checksum mismatch</span>
+</li>
+<li class="flex items-center gap-2">
+<span class="text-red-500 leading-none">•</span>
+<span>unsupported format</span>
+</li>
+<li class="flex items-center gap-2">
+<span class="text-red-500 leading-none">•</span>
+<span>invalid manifest</span>
+</li>
+</ul>
+</div>
+<button class="mt-5 w-full border border-indigo-200 hover:border-indigo-400 bg-white text-indigo-600 font-semibold py-2 px-3 rounded-lg text-xs uppercase tracking-wider transition hover:bg-indigo-50/50" type="button">
+            CHOOSE ANOTHER BACKUP
+          </button>
+</article>
+<!-- Card 8: Checksum Mismatch -->
+<article class="bg-white rounded-xl border border-slate-200/90 p-5 shadow-[0_1px_2px_rgba(0,0,0,0.03)] flex flex-col justify-between" data-purpose="checksum-mismatch-card">
+<div>
+<div class="flex items-center gap-1.5 text-amber-600 font-bold text-xs tracking-wider mb-2">
+<svg class="w-4 h-4 text-amber-600" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+<span>CHECKSUM MISMATCH</span>
+</div>
+<p class="text-xs text-slate-500 mb-3.5 leading-relaxed">
+              This backup may be corrupted or modified. FlowDesk did not restore it.
+            </p>
+<!-- File Box -->
+<div class="bg-slate-50 border border-slate-200 rounded-lg p-3 text-xs mb-2">
+<div class="flex items-center gap-2 font-medium text-slate-800">
+<svg class="w-4 h-4 text-slate-500 flex-shrink-0" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"></path>
+</svg>
+<span class="font-mono truncate text-[11.5px]">FlowDesk-Backup-2026-09-04.zip</span>
+</div>
+<div class="text-[11px] text-slate-400 mt-1 pl-6">2.4 MB</div>
+</div>
+</div>
+<button class="mt-4 w-full border border-indigo-200 hover:border-indigo-400 bg-white text-indigo-600 font-semibold py-2 px-3 rounded-lg text-xs uppercase tracking-wider transition hover:bg-indigo-50/50" type="button">
+            CHOOSE ANOTHER BACKUP
+          </button>
+</article>
+<!-- Card 9: Mobile Layout Reference -->
+<article class="bg-white rounded-xl border border-slate-200/90 p-5 shadow-[0_1px_2px_rgba(0,0,0,0.03)] flex flex-col justify-between" data-purpose="mobile-layout-reference-card">
+<div>
+<h2 class="text-xs font-bold uppercase tracking-wider text-indigo-600 mb-1">MOBILE LAYOUT REFERENCE</h2>
+<p class="text-xs text-slate-500 mb-3">How this screen adapts on mobile.</p>
+<!-- Mini Phone Mockup View -->
+<div class="bg-white border border-slate-200 rounded-lg p-3 shadow-sm text-xs space-y-2">
+<div class="font-semibold text-slate-800 text-xs pb-1 border-b border-slate-100">
+                Today
+              </div>
+<ul class="space-y-1 text-[11px] text-slate-600">
+<li class="flex items-center gap-1.5">
+<span class="text-emerald-600 font-bold">✓</span>
+<span>ZIP readable</span>
+</li>
+<li class="flex items-center gap-1.5">
+<span class="text-emerald-600 font-bold">✓</span>
+<span>Manifest found</span>
+</li>
+<li class="flex items-center gap-1.5">
+<span class="text-emerald-600 font-bold">✓</span>
+<span>Format compatible</span>
+</li>
+<li class="text-[10.5px] text-slate-400 pl-4 font-medium">
+                  + 2 more checks
+                </li>
+</ul>
+<div class="pt-1.5">
+<span class="block w-full text-center bg-emerald-50 border border-emerald-200 text-emerald-700 font-medium text-[11px] py-1 rounded">
+                  Ready to restore
+                </span>
+</div>
+</div>
+</div>
+</article>
+</div>
+</main>
+</div>
+<!-- END: MainContentArea -->
+</body></html>

@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>FlowDesk — Settings &amp; AI Providers</title>
+<!-- Tailwind CSS v3 with forms & container queries plugins -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#eef2ff',
+              100: '#e0e7ff',
+              500: '#6366f1',
+              600: '#4f46e5',
+              700: '#4338ca',
+            },
+            surface: {
+              50: '#f8f9fa',
+              100: '#f1f3f5',
+              border: '#e5e7eb',
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<style data-purpose="custom-scrollbars">
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #d1d5db;
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #9ca3af;
+    }
+  </style>
+</head>
+<body class="bg-[#F8F9FA] text-slate-800 font-sans min-h-screen flex antialiased selection:bg-indigo-100 selection:text-indigo-800">
+<!-- BEGIN: LeftSidebar -->
+<aside class="w-64 bg-white border-r border-slate-200 flex flex-col justify-between shrink-0 h-screen sticky top-0" data-purpose="primary-sidebar">
+<!-- Top Navigation Section -->
+<div class="p-5 flex flex-col gap-6">
+<!-- App Brand Logo -->
+<div class="flex items-center gap-3 px-2">
+<div class="w-7 h-7 rounded-lg bg-indigo-600 flex items-center justify-center text-white shadow-sm shadow-indigo-200">
+<svg class="w-4 h-4" fill="currentColor" viewbox="0 0 24 24">
+<path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
+</svg>
+</div>
+<span class="font-bold text-lg tracking-tight text-slate-900">FlowDesk</span>
+</div>
+<!-- Navigation Links -->
+<nav class="flex flex-col gap-1 text-sm font-medium text-slate-600" data-purpose="navigation-menu">
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-50 transition-colors" href="#">
+<svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24"><rect height="18" rx="2" ry="2" width="18" x="3" y="4"></rect><line x1="16" x2="16" y1="2" y2="6"></line><line x1="8" x2="8" y1="2" y2="6"></line><line x1="3" x2="21" y1="10" y2="10"></line></svg>
+          Today
+        </a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-50 transition-colors" href="#">
+<svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24"><path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path></svg>
+          Brain Dump
+        </a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-50 transition-colors" href="#">
+<svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path></svg>
+          Tasks
+        </a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-50 transition-colors" href="#">
+<svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24"><path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+          Analytics
+        </a>
+<!-- Active Nav Item -->
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg bg-indigo-50/80 text-indigo-600 font-semibold transition-colors" href="#">
+<svg class="w-4 h-4 text-indigo-600" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24"><path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+          Settings
+        </a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-50 transition-colors" href="#">
+<svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24"><path d="M4 7v10c0 2 1.5 3 3.5 3h9c2 0 3.5-1 3.5-3V7c0-2-1.5-3-3.5-3h-9C5.5 4 4 5 4 7z"></path><path d="M9 12h6m-3-3v6"></path></svg>
+          Backup
+        </a>
+</nav>
+</div>
+<!-- Bottom Profile & Status -->
+<div class="p-4 border-t border-slate-100 flex flex-col gap-3">
+<!-- AI Provider status snippet -->
+<div class="bg-slate-50 border border-slate-200/80 rounded-lg p-2.5 text-xs">
+<div class="text-slate-400 font-medium">AI Provider</div>
+<div class="flex items-center gap-1.5 mt-0.5 font-medium text-slate-700">
+<span class="w-2 h-2 rounded-full bg-emerald-500 inline-block"></span>
+<span>Ollama</span>
+</div>
+<div class="text-[11px] text-slate-400 mt-1">Model</div>
+<div class="font-mono text-xs text-slate-600 truncate">qwen3.5:9b</div>
+</div>
+<!-- User Profile Pill -->
+<div class="flex items-center justify-between p-1.5 rounded-lg hover:bg-slate-100 transition-colors cursor-pointer">
+<div class="flex items-center gap-2.5">
+<div class="w-7 h-7 rounded-full bg-slate-900 text-white flex items-center justify-center font-medium text-xs">
+            D
+          </div>
+<span class="text-xs font-semibold text-slate-700">Dinesh</span>
+</div>
+<svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24"><path d="M19 9l-7 7-7-7"></path></svg>
+</div>
+</div>
+</aside>
+<!-- END: LeftSidebar -->
+<!-- BEGIN: MainContentArea -->
+<main class="flex-1 flex flex-col h-screen overflow-y-auto" data-purpose="settings-main-container">
+<!-- Sticky Top Header -->
+<header class="bg-white/80 backdrop-blur-md sticky top-0 z-10 border-b border-slate-200 px-8 py-4 flex items-center justify-between" data-purpose="page-header">
+<div>
+<h1 class="text-xl font-bold text-slate-900 tracking-tight">Settings</h1>
+<p class="text-xs text-slate-500 mt-0.5">Configure how FlowDesk works for you.</p>
+</div>
+<!-- Time and Notification Bell -->
+<div class="flex items-center gap-4">
+<span class="text-xs font-medium text-slate-500">4:55 PM</span>
+<button aria-label="Notifications" class="relative p-1.5 text-slate-400 hover:text-slate-600 rounded-full hover:bg-slate-100 transition-colors">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24"><path d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
+<span class="absolute 0 top-0.5 right-0.5 w-4 h-4 bg-indigo-600 text-[10px] text-white font-bold rounded-full flex items-center justify-center">2</span>
+</button>
+</div>
+</header>
+<!-- Page Body Container -->
+<div class="p-8 max-w-7xl w-full mx-auto flex flex-col gap-6">
+<!-- BEGIN: SectionGeneralAndProviderSelector -->
+<section class="grid grid-cols-1 lg:grid-cols-2 gap-6" data-purpose="general-and-provider-picker">
+<!-- General Preferences Card -->
+<article class="bg-white rounded-xl border border-slate-200 p-5 shadow-sm flex flex-col justify-between" data-purpose="general-settings-card">
+<h2 class="text-sm font-semibold text-slate-900 mb-4">General</h2>
+<div class="space-y-3.5 text-xs">
+<!-- Work Start -->
+<div class="flex items-center justify-between">
+<label class="text-slate-600 font-medium">Work Start</label>
+<div class="relative w-48">
+<input class="w-full text-xs rounded-md border-slate-200 pl-3 pr-8 py-1.5 font-medium text-slate-700 bg-white shadow-sm focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500" readonly="" type="text" value="9:00 AM"/>
+<svg class="w-3.5 h-3.5 absolute right-2.5 top-2 text-slate-400 pointer-events-none" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><path d="M12 6v6l4 2"></path></svg>
+</div>
+</div>
+<!-- Work End -->
+<div class="flex items-center justify-between">
+<label class="text-slate-600 font-medium">Work End</label>
+<div class="relative w-48">
+<input class="w-full text-xs rounded-md border-slate-200 pl-3 pr-8 py-1.5 font-medium text-slate-700 bg-white shadow-sm focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500" readonly="" type="text" value="10:00 PM"/>
+<svg class="w-3.5 h-3.5 absolute right-2.5 top-2 text-slate-400 pointer-events-none" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><path d="M12 6v6l4 2"></path></svg>
+</div>
+</div>
+<!-- Timezone -->
+<div class="flex items-center justify-between">
+<label class="text-slate-600 font-medium">Timezone</label>
+<select class="w-48 text-xs rounded-md border-slate-200 pl-3 pr-8 py-1.5 font-medium text-slate-700 bg-white shadow-sm focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500">
+<option selected="">Local Time</option>
+<option>UTC</option>
+<option>EST (UTC-5)</option>
+</select>
+</div>
+<!-- Notifications Toggle -->
+<div class="flex items-center justify-between pt-1 border-t border-slate-100">
+<label class="text-slate-600 font-medium">Notifications</label>
+<div class="flex items-center gap-2">
+<span class="text-[11px] font-semibold text-slate-700">ON</span>
+<button aria-checked="true" class="w-9 h-5 bg-indigo-600 rounded-full relative p-0.5 transition-colors focus:outline-none" role="switch" type="button">
+<span class="block w-4 h-4 bg-white rounded-full translate-x-4 shadow-sm transition-transform"></span>
+</button>
+</div>
+</div>
+</div>
+</article>
+<!-- AI Provider Picker Card -->
+<article class="bg-white rounded-xl border border-slate-200 p-5 shadow-sm flex flex-col justify-between" data-purpose="ai-provider-selector">
+<div>
+<h2 class="text-sm font-semibold text-slate-900">AI Provider</h2>
+<p class="text-xs text-slate-500 mt-1 mb-4">Choose the AI provider FlowDesk should use.</p>
+</div>
+<!-- Provider Selectable Segment Buttons -->
+<div class="grid grid-cols-3 gap-3">
+<!-- Ollama Selected -->
+<button class="flex items-center justify-between px-3 py-2.5 rounded-lg border-2 border-indigo-600 bg-indigo-50/40 text-left transition-all">
+<span class="text-xs font-semibold text-indigo-900">Ollama</span>
+<span class="w-2.5 h-2.5 rounded-full bg-indigo-600 ring-2 ring-indigo-200"></span>
+</button>
+<!-- OpenRouter -->
+<button class="flex items-center justify-between px-3 py-2.5 rounded-lg border border-slate-200 bg-white hover:border-slate-300 text-left transition-all">
+<span class="text-xs font-medium text-slate-700">OpenRouter</span>
+</button>
+<!-- Offline / No AI -->
+<button class="flex items-center justify-between px-3 py-2.5 rounded-lg border border-slate-200 bg-white hover:border-slate-300 text-left transition-all">
+<span class="text-xs font-medium text-slate-700">Offline / No AI</span>
+</button>
+</div>
+</article>
+</section>
+<!-- END: SectionGeneralAndProviderSelector -->
+<!-- BEGIN: SectionProvidersConfiguration -->
+<section class="grid grid-cols-1 lg:grid-cols-2 gap-6" data-purpose="provider-settings-panels">
+<!-- OLLAMA Configuration Panel -->
+<article class="bg-white rounded-xl border border-slate-200 p-5 shadow-sm flex flex-col justify-between" data-purpose="ollama-config">
+<div>
+<h3 class="text-xs font-bold text-slate-900 tracking-wider mb-4 uppercase">OLLAMA</h3>
+<div class="space-y-3.5 text-xs">
+<!-- Base URL -->
+<div class="grid grid-cols-4 items-center">
+<label class="text-slate-500 font-medium">Base URL</label>
+<input class="col-span-3 text-xs rounded-md border-slate-200 px-3 py-1.5 text-slate-800 bg-white shadow-sm focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500" type="text" value="http://127.0.0.1:11434"/>
+</div>
+<!-- Model -->
+<div class="grid grid-cols-4 items-center">
+<label class="text-slate-500 font-medium">Model</label>
+<input class="col-span-3 text-xs rounded-md border-slate-200 px-3 py-1.5 text-slate-800 bg-white shadow-sm focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500" type="text" value="qwen3.5:9b"/>
+</div>
+<!-- Status Indicator -->
+<div class="grid grid-cols-4 items-center">
+<label class="text-slate-500 font-medium">Status</label>
+<div class="col-span-3 flex items-center gap-1.5 text-slate-700 font-medium">
+<span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+<span>Connected</span>
+</div>
+</div>
+</div>
+<!-- Action Button -->
+<div class="mt-5 flex justify-center">
+<button class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-xs tracking-wider uppercase px-6 py-2 rounded-lg shadow-sm transition-all duration-150 active:scale-95">
+                TEST CONNECTION
+              </button>
+</div>
+</div>
+<!-- Status Examples Mini-Guide -->
+<div class="mt-6 pt-4 border-t border-slate-100 text-[11px] text-slate-500">
+<span class="block font-medium text-slate-400 mb-2">Status examples</span>
+<div class="flex flex-wrap items-center gap-x-3 gap-y-1.5">
+<div class="flex items-center gap-1.5">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+<span>Connecting</span>
+</div>
+<div class="flex items-center gap-1.5">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-600"></span>
+<span>Connected</span>
+</div>
+<div class="flex items-center gap-1.5">
+<span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span>
+<span>Unavailable</span>
+</div>
+<div class="flex items-center gap-1.5">
+<span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
+<span>Invalid model</span>
+</div>
+<div class="flex items-center gap-1.5">
+<span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span>
+<span>Configuration required</span>
+</div>
+</div>
+</div>
+</article>
+<!-- OPENROUTER Configuration Panel -->
+<article class="bg-white rounded-xl border border-slate-200 p-5 shadow-sm flex flex-col justify-between" data-purpose="openrouter-config">
+<div>
+<h3 class="text-xs font-bold text-slate-900 tracking-wider mb-4 uppercase">OPENROUTER</h3>
+<div class="space-y-3.5 text-xs">
+<!-- Base URL -->
+<div class="grid grid-cols-4 items-center">
+<label class="text-slate-500 font-medium">Base URL</label>
+<input class="col-span-3 text-xs rounded-md border-slate-200 px-3 py-1.5 text-slate-800 bg-white shadow-sm focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500" type="text" value="https://openrouter.ai/api/v1"/>
+</div>
+<!-- Model -->
+<div class="grid grid-cols-4 items-center">
+<label class="text-slate-500 font-medium">Model</label>
+<input class="col-span-3 text-xs rounded-md border-slate-200 px-3 py-1.5 text-slate-800 bg-white shadow-sm focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500" type="text" value="mistralai/mistral-7b-instruct:free"/>
+</div>
+<!-- API Key with visibility toggle -->
+<div class="grid grid-cols-4 items-center">
+<label class="text-slate-500 font-medium">API Key</label>
+<div class="col-span-3 relative">
+<input class="w-full text-xs rounded-md border-slate-200 pl-3 pr-8 py-1.5 text-slate-800 bg-white shadow-sm focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 tracking-wider" type="password" value="sk-or-v1-abcdef0123456789"/>
+<button class="absolute right-2.5 top-2 text-slate-400 hover:text-slate-600 focus:outline-none" type="button">
+<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24"><path d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18"></path></svg>
+</button>
+</div>
+</div>
+<!-- Usage Policy -->
+<div class="grid grid-cols-4 items-center">
+<label class="text-slate-500 font-medium">Usage Policy</label>
+<div class="col-span-3">
+<span class="inline-block text-slate-700 bg-slate-50 border border-slate-200 px-2.5 py-1 rounded text-[11px] font-medium">
+                    Free models only
+                  </span>
+</div>
+</div>
+<!-- Status Indicator -->
+<div class="grid grid-cols-4 items-center">
+<label class="text-slate-500 font-medium">Status</label>
+<div class="col-span-3 flex items-center gap-1.5 text-slate-700 font-medium">
+<span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+<span>Connected</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Action Button -->
+<div class="mt-6 flex justify-center">
+<button class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-xs tracking-wider uppercase px-6 py-2 rounded-lg shadow-sm transition-all duration-150 active:scale-95">
+              TEST CONNECTION
+            </button>
+</div>
+</article>
+</section>
+<!-- END: SectionProvidersConfiguration -->
+<!-- BEGIN: SectionStatusCardsRow -->
+<section class="grid grid-cols-1 md:grid-cols-3 gap-6" data-purpose="status-cards-row">
+<!-- AI Usage Protection Card -->
+<article class="bg-white rounded-xl border border-slate-200 p-5 shadow-sm flex flex-col justify-center" data-purpose="usage-protection">
+<h4 class="text-xs font-bold text-slate-900 mb-3">AI Usage Protection</h4>
+<ul class="space-y-2 text-xs text-slate-600">
+<li class="flex items-center gap-2">
+<svg class="w-4 h-4 text-emerald-500 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewbox="0 0 24 24"><path d="M5 13l4 4L19 7"></path></svg>
+<span>Free models only</span>
+</li>
+<li class="flex items-center gap-2">
+<svg class="w-4 h-4 text-emerald-500 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewbox="0 0 24 24"><path d="M5 13l4 4L19 7"></path></svg>
+<span>Never automatically use paid models</span>
+</li>
+</ul>
+</article>
+<!-- Connection Test (Success) -->
+<article class="bg-white rounded-xl border border-slate-200 p-5 shadow-sm flex flex-col justify-center" data-purpose="test-success-state">
+<h4 class="text-xs font-medium text-slate-400 mb-2">Connection Test (Success)</h4>
+<div class="flex items-center gap-2.5">
+<div class="w-5 h-5 rounded-full bg-emerald-500 text-white flex items-center justify-center shrink-0">
+<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="3" viewbox="0 0 24 24"><path d="M5 13l4 4L19 7"></path></svg>
+</div>
+<div>
+<div class="text-xs font-bold text-slate-800">Connected</div>
+<div class="text-[11px] text-slate-500">Model available</div>
+</div>
+</div>
+</article>
+<!-- Connection Test (Failure) -->
+<article class="bg-white rounded-xl border border-slate-200 p-5 shadow-sm flex flex-col justify-between" data-purpose="test-failure-state">
+<div>
+<h4 class="text-xs font-medium text-slate-400 mb-2">Connection Test (Failure)</h4>
+<div class="flex items-start gap-2.5">
+<div class="w-5 h-5 rounded-full bg-rose-500 text-white flex items-center justify-center shrink-0 mt-0.5">
+<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="3" viewbox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12"></path></svg>
+</div>
+<div class="flex-1">
+<div class="text-xs font-bold text-slate-800">Connection failed</div>
+<div class="text-[11px] text-slate-500 leading-tight">Check your base URL or model.</div>
+</div>
+</div>
+</div>
+<div class="mt-3 flex justify-end">
+<button class="px-3 py-1 bg-white border border-slate-200 hover:bg-slate-50 rounded text-xs font-medium text-slate-700 shadow-sm transition-colors">
+              Retry
+            </button>
+</div>
+</article>
+</section>
+<!-- END: SectionStatusCardsRow -->
+<!-- BEGIN: SectionFooterCardsRow -->
+<section class="grid grid-cols-1 md:grid-cols-3 gap-6 pb-6" data-purpose="preferences-and-backups">
+<!-- Notifications Card -->
+<article class="bg-white rounded-xl border border-slate-200 p-5 shadow-sm flex flex-col justify-between" data-purpose="notifications-subcard">
+<h4 class="text-xs font-bold text-slate-900 mb-3">Notifications</h4>
+<div class="space-y-2.5 text-xs text-slate-600">
+<!-- Row 1 -->
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24"><path d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
+<span>Task starting</span>
+</div>
+<button aria-checked="true" class="w-7 h-4 bg-indigo-600 rounded-full relative p-0.5 focus:outline-none" role="switch" type="button">
+<span class="block w-3 h-3 bg-white rounded-full translate-x-3 shadow-sm"></span>
+</button>
+</div>
+<!-- Row 2 -->
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+<span>10-minute reminder</span>
+</div>
+<button aria-checked="true" class="w-7 h-4 bg-indigo-600 rounded-full relative p-0.5 focus:outline-none" role="switch" type="button">
+<span class="block w-3 h-3 bg-white rounded-full translate-x-3 shadow-sm"></span>
+</button>
+</div>
+<!-- Row 3 -->
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+<span>Task ending soon</span>
+</div>
+<button aria-checked="true" class="w-7 h-4 bg-indigo-600 rounded-full relative p-0.5 focus:outline-none" role="switch" type="button">
+<span class="block w-3 h-3 bg-white rounded-full translate-x-3 shadow-sm"></span>
+</button>
+</div>
+<!-- Row 4 -->
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24"><path d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
+<span>Daily review reminder</span>
+</div>
+<button aria-checked="true" class="w-7 h-4 bg-indigo-600 rounded-full relative p-0.5 focus:outline-none" role="switch" type="button">
+<span class="block w-3 h-3 bg-white rounded-full translate-x-3 shadow-sm"></span>
+</button>
+</div>
+</div>
+</article>
+<!-- Data & Privacy Card -->
+<article class="bg-white rounded-xl border border-slate-200 p-5 shadow-sm flex flex-col justify-between" data-purpose="data-privacy-subcard">
+<div>
+<h4 class="text-xs font-bold text-slate-900 mb-3">Data &amp; Privacy</h4>
+<div class="space-y-2.5 text-xs text-slate-600">
+<div class="flex items-center justify-between">
+<span>Local data storage</span>
+<div class="flex items-center gap-1.5 font-medium text-slate-700">
+<span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+<span>Active</span>
+</div>
+</div>
+<div class="flex items-center justify-between">
+<span>Cloud synchronization</span>
+<div class="flex items-center gap-1.5 font-medium text-slate-500">
+<span class="w-2 h-2 rounded-full bg-slate-300"></span>
+<span>Not enabled</span>
+</div>
+</div>
+</div>
+</div>
+<div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">
+<span class="text-xs font-medium text-slate-600">Backup</span>
+<button class="px-3 py-1 bg-white border border-slate-200 hover:bg-slate-50 rounded text-xs font-medium text-slate-700 shadow-sm transition-colors">
+              Open Backup
+            </button>
+</div>
+</article>
+<!-- Backup & Restore Card -->
+<article class="bg-white rounded-xl border border-slate-200 p-5 shadow-sm flex flex-col justify-between" data-purpose="backup-restore-subcard">
+<div>
+<h4 class="text-xs font-bold text-slate-900 mb-1.5">Backup &amp; Restore</h4>
+<p class="text-xs text-slate-500 leading-relaxed">
+              Create and manage backups of your local data.
+            </p>
+</div>
+<div class="mt-6 flex justify-end">
+<button class="flex items-center gap-2 px-3 py-1.5 bg-white border border-slate-200 hover:bg-slate-50 rounded-lg text-xs font-medium text-indigo-600 shadow-sm transition-colors">
+<svg class="w-4 h-4 text-indigo-600" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24"><path d="M4 7v10c0 2 1.5 3 3.5 3h9c2 0 3.5-1 3.5-3V7c0-2-1.5-3-3.5-3h-9C5.5 4 4 5 4 7z"></path><path d="M9 12h6m-3-3v6"></path></svg>
+<span>Open Backup</span>
+</button>
+</div>
+</article>
+</section>
+<!-- END: SectionFooterCardsRow -->
+</div>
+</main>
+<!-- END: MainContentArea -->
+</body></html>

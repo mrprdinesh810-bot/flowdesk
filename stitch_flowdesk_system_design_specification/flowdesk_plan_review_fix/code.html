@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>FlowDesk - Plan Review + Priority + Fix</title>
+<!-- Tailwind CSS v3 with forms and container queries plugins -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#EEF2FF',
+              100: '#E0E7FF',
+              500: '#6366F1',
+              600: '#4F46E5',
+              700: '#4338CA',
+            },
+            neutral: {
+              50: '#F8FAFC',
+              100: '#F1F5F9',
+              200: '#E2E8F0',
+              300: '#CBD5E1',
+              400: '#94A3B8',
+              500: '#64748B',
+              600: '#475569',
+              700: '#334155',
+              800: '#1E293B',
+              900: '#0F172A',
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+<!-- Custom Styles for clean presentation -->
+<style data-purpose="custom-scrollbars">
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #94a3b8;
+    }
+  </style>
+</head>
+<body class="bg-[#F6F8FB] text-[#1E293B] font-sans antialiased min-h-screen flex flex-col justify-between selection:bg-brand-100 selection:text-brand-700">
+<!-- Top Page Badge Indicating Step (Reference Header) -->
+<div class="w-full bg-[#1A184D] text-white text-xs font-semibold py-1 px-4 text-center tracking-wide">
+    4. PLAN REVIEW + PRIORITY + FIX
+    <span class="block text-[11px] font-normal text-indigo-200 mt-0.5">Review the plan, adjust if needed, and FIX it to create your final schedule.</span>
+</div>
+<div class="flex-1 flex overflow-hidden">
+<!-- BEGIN: LeftSidebar -->
+<aside class="w-64 bg-white border-r border-slate-200 flex flex-col justify-between shrink-0 select-none" data-purpose="sidebar-navigation">
+<!-- Top Brand & Navigation -->
+<div>
+<!-- Logo -->
+<div class="h-16 flex items-center px-6 gap-3">
+<div class="w-8 h-8 rounded-lg bg-[#4F46E5] flex items-center justify-center text-white shadow-sm shadow-indigo-200">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" viewbox="0 0 24 24">
+<rect height="7" rx="1.5" width="7" x="3" y="3"></rect>
+<rect height="7" rx="1.5" width="7" x="14" y="3"></rect>
+<rect height="7" rx="1.5" width="7" x="14" y="14"></rect>
+<rect height="7" rx="1.5" width="7" x="3" y="14"></rect>
+</svg>
+</div>
+<span class="font-bold text-xl tracking-tight text-slate-900">FlowDesk</span>
+</div>
+<!-- Navigation Menu -->
+<nav class="mt-4 px-3 space-y-1">
+<a class="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition-colors" href="#">
+<svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24">
+<rect height="18" rx="2" ry="2" width="18" x="3" y="4"></rect>
+<line x1="16" x2="16" y1="2" y2="6"></line>
+<line x1="8" x2="8" y1="2" y2="6"></line>
+<line x1="3" x2="21" y1="10" y2="10"></line>
+</svg>
+            Today
+          </a>
+<a class="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition-colors" href="#">
+<svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24">
+<path d="M12 2a7 7 0 0 0-7 7c0 2.38 1.19 4.47 3 5.74V17a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2v-2.26c1.81-1.27 3-3.36 3-5.74a7 7 0 0 0-7-7z"></path>
+<line x1="9" x2="15" y1="21" y2="21"></line>
+</svg>
+            Brain Dump
+          </a>
+<a class="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition-colors" href="#">
+<svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24">
+<path d="M9 11l3 3L22 4"></path>
+<path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+</svg>
+            Tasks
+          </a>
+<a class="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition-colors" href="#">
+<svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24">
+<path d="M18 20V10"></path>
+<path d="M12 20V4"></path>
+<path d="M6 20v-6"></path>
+</svg>
+            Analytics
+          </a>
+<a class="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition-colors" href="#">
+<svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24">
+<circle cx="12" cy="12" r="3"></circle>
+<path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+</svg>
+            Settings
+          </a>
+<a class="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition-colors" href="#">
+<svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24">
+<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+<polyline points="17 8 12 3 7 8"></polyline>
+<line x1="12" x2="12" y1="3" y2="15"></line>
+</svg>
+            Backup
+          </a>
+</nav>
+</div>
+<!-- Bottom Meta (AI Provider + Profile) -->
+<div class="p-4 border-t border-slate-100 space-y-4">
+<!-- AI Provider Badge -->
+<div class="p-3 bg-slate-50 rounded-xl border border-slate-100 text-xs">
+<span class="text-slate-400 block text-[11px] font-medium mb-1">AI Provider</span>
+<div class="flex items-center gap-1.5 text-slate-800 font-semibold mb-0.5">
+<span class="w-2 h-2 rounded-full bg-emerald-500 inline-block"></span>
+            Ollama
+          </div>
+<div class="text-slate-500 font-medium text-[11px]">
+            qwen3.5:9b
+          </div>
+</div>
+<!-- User Profile Pill -->
+<div class="flex items-center justify-between p-2 rounded-xl hover:bg-slate-50 cursor-pointer border border-transparent transition-colors">
+<div class="flex items-center gap-2.5">
+<div class="w-8 h-8 rounded-full bg-[#3B4CB8] text-white flex items-center justify-center font-bold text-sm">
+              D
+            </div>
+<span class="text-sm font-semibold text-slate-800">Dinesh</span>
+</div>
+<svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M19 9l-7 7-7-7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</div>
+</div>
+</aside>
+<!-- END: LeftSidebar -->
+<!-- BEGIN: MainContent -->
+<main class="flex-1 overflow-y-auto px-8 py-6 max-w-6xl mx-auto flex flex-col justify-between" data-purpose="plan-review-view">
+<div>
+<!-- Top Status Bar (Date, Time, Notification) -->
+<div class="flex items-center justify-between text-xs text-slate-500 mb-4" data-purpose="header-metadata">
+<span class="font-medium">Sun, 31 Aug 2026</span>
+<div class="flex items-center gap-3">
+<span class="font-medium text-slate-600">4:52 PM</span>
+<div class="relative cursor-pointer">
+<svg class="w-5 h-5 text-slate-600 hover:text-slate-900 transition-colors" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24">
+<path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+<path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+</svg>
+<span class="absolute -top-1.5 -right-1.5 bg-[#4F46E5] text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center font-bold">2</span>
+</div>
+</div>
+</div>
+<!-- Section Header with Regenerate Action -->
+<header class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-slate-200/80 mb-6">
+<div>
+<h1 class="text-2xl font-extrabold text-slate-900 tracking-tight">Today's Plan Review</h1>
+<p class="text-xs sm:text-sm text-slate-500 mt-1">Here's your plan based on your input. Review, adjust if needed, and FIX it.</p>
+</div>
+<div>
+<button class="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-white border border-slate-200 rounded-lg text-xs font-medium text-slate-700 shadow-sm hover:bg-slate-50 hover:border-slate-300 transition-all">
+<svg class="w-3.5 h-3.5 text-slate-500" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24">
+<polyline points="23 4 23 10 17 10"></polyline>
+<polyline points="1 20 1 14 7 14"></polyline>
+<path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+</svg>
+              Regenerate
+            </button>
+</div>
+</header>
+<!-- BEGIN: SummaryHighlights -->
+<section class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6" data-purpose="outcome-and-must-win-cards">
+<!-- Main Outcome Card -->
+<div class="bg-white border border-slate-200/90 rounded-xl p-4 shadow-sm relative overflow-hidden">
+<div class="flex items-center gap-2 mb-2 text-rose-600 font-semibold text-xs">
+<!-- Target Icon -->
+<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" viewbox="0 0 24 24">
+<circle cx="12" cy="12" r="10"></circle>
+<circle cx="12" cy="12" r="6"></circle>
+<circle cx="12" cy="12" r="2"></circle>
+</svg>
+<span>Main Outcome (Today)</span>
+</div>
+<p class="text-slate-900 font-bold text-sm leading-snug">
+              Complete EDC revision and verify the TRAKAE parser.
+            </p>
+</div>
+<!-- Must Win Today Card -->
+<div class="bg-white border border-slate-200/90 rounded-xl p-4 shadow-sm relative">
+<div class="flex items-center gap-2 mb-2 text-emerald-600 font-semibold text-xs">
+<!-- Trophy Icon -->
+<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" viewbox="0 0 24 24">
+<path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path>
+<path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path>
+<path d="M4 22h16"></path>
+<path d="M10 14.66V17c0 .55-.45 1-1 1H7v4h10v-4h-2c-.55 0-1-.45-1-1v-2.34"></path>
+<path d="M18 2H6v7a6 6 0 0 0 12 0V2z"></path>
+</svg>
+<span>Must Win Today</span>
+</div>
+<div class="space-y-1.5 text-xs text-slate-700 font-medium">
+<label class="flex items-center gap-2 cursor-pointer hover:text-slate-900">
+<input class="rounded border-slate-300 text-indigo-600 focus:ring-0 w-3.5 h-3.5" type="checkbox"/>
+<span>EDC Revision</span>
+</label>
+<label class="flex items-center gap-2 cursor-pointer hover:text-slate-900">
+<input class="rounded border-slate-300 text-indigo-600 focus:ring-0 w-3.5 h-3.5" type="checkbox"/>
+<span>TRAKAE Parser</span>
+</label>
+</div>
+</div>
+</section>
+<!-- END: SummaryHighlights -->
+<!-- BEGIN: PrioritizedTasksSection -->
+<section class="mb-6" data-purpose="prioritized-tasks">
+<div class="flex items-center justify-between mb-3">
+<h2 class="text-sm font-bold text-slate-900">Prioritized Tasks</h2>
+<button class="inline-flex items-center gap-1 text-xs font-semibold text-indigo-600 hover:text-indigo-700 bg-indigo-50/60 px-2 py-0.5 rounded border border-indigo-100">
+<svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24">
+<path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
+</svg>
+              Edit
+            </button>
+</div>
+<div class="space-y-2.5">
+<!-- Task Item 1: P1 EDC Revision -->
+<div class="bg-white border border-slate-200 rounded-xl p-3.5 flex flex-col md:flex-row md:items-center justify-between gap-3 shadow-sm hover:border-slate-300 transition-colors">
+<div class="flex items-start gap-3">
+<span class="w-7 h-7 rounded-full bg-red-600 text-white font-bold text-xs flex items-center justify-center shrink-0 shadow-sm shadow-red-200">
+                  P1
+                </span>
+<div>
+<div class="flex items-center gap-2 flex-wrap">
+<h3 class="font-bold text-sm text-slate-900">EDC Revision</h3>
+<span class="text-xs text-slate-500 font-normal flex items-center gap-1">
+<svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<circle cx="12" cy="12" r="10" stroke-width="2"></circle>
+<polyline points="12 6 12 12 16 14" stroke-width="2"></polyline>
+</svg>
+                      4:30 PM – 6:00 PM (90 min)
+                    </span>
+<span class="px-2 py-0.5 text-[11px] font-semibold bg-blue-50 text-blue-600 border border-blue-100 rounded-md">Study</span>
+</div>
+<p class="text-xs text-slate-500 mt-1">Complete Diode topic + solve 5 problems.</p>
+</div>
+</div>
+<!-- Rationale pill / Right block -->
+<div class="flex items-center justify-between md:justify-end gap-3 text-xs border-t md:border-t-0 pt-2 md:pt-0 border-slate-100">
+<div class="text-left md:text-left text-[11px] bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-100">
+<span class="font-bold text-red-600">Why P1?</span>
+<ul class="text-slate-600 space-y-0.5 mt-0.5">
+<li class="list-disc list-inside">Exam coming soon</li>
+<li class="list-disc list-inside">High value for your goals</li>
+</ul>
+</div>
+<svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</div>
+</div>
+<!-- Task Item 2: P2 TRAKAE Parser -->
+<div class="bg-white border border-slate-200 rounded-xl p-3.5 flex flex-col md:flex-row md:items-center justify-between gap-3 shadow-sm hover:border-slate-300 transition-colors">
+<div class="flex items-start gap-3">
+<span class="w-7 h-7 rounded-full bg-orange-600 text-white font-bold text-xs flex items-center justify-center shrink-0 shadow-sm shadow-orange-200">
+                  P2
+                </span>
+<div>
+<div class="flex items-center gap-2 flex-wrap">
+<h3 class="font-bold text-sm text-slate-900">TRAKAE Parser</h3>
+<span class="text-xs text-slate-500 font-normal flex items-center gap-1">
+<svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<circle cx="12" cy="12" r="10" stroke-width="2"></circle>
+<polyline points="12 6 12 12 16 14" stroke-width="2"></polyline>
+</svg>
+                      7:30 PM – 9:00 PM (90 min)
+                    </span>
+<span class="px-2 py-0.5 text-[11px] font-semibold bg-sky-50 text-sky-600 border border-sky-100 rounded-md">Project</span>
+</div>
+<p class="text-xs text-slate-500 mt-1">Fix CSV mapping and verify parser output.</p>
+</div>
+</div>
+<!-- Rationale pill / Right block -->
+<div class="flex items-center justify-between md:justify-end gap-3 text-xs border-t md:border-t-0 pt-2 md:pt-0 border-slate-100">
+<div class="text-left md:text-left text-[11px] bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-100 min-w-[170px]">
+<span class="font-bold text-orange-600">Why P2?</span>
+<ul class="text-slate-600 space-y-0.5 mt-0.5">
+<li class="list-disc list-inside">Core project work</li>
+<li class="list-disc list-inside">Blocks next step</li>
+</ul>
+</div>
+<svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</div>
+</div>
+</div>
+</section>
+<!-- END: PrioritizedTasksSection -->
+<!-- BEGIN: OtherTasksSection -->
+<section class="mb-6" data-purpose="other-tasks">
+<h2 class="text-sm font-bold text-slate-900 mb-3">Other Tasks</h2>
+<div class="space-y-2.5">
+<!-- Task Item 3: P3 Gym -->
+<div class="bg-white border border-slate-200 rounded-xl p-3 flex flex-col md:flex-row md:items-center justify-between gap-3 shadow-sm hover:border-slate-300 transition-colors">
+<div class="flex items-start gap-3">
+<span class="w-7 h-7 rounded-full bg-amber-500 text-white font-bold text-xs flex items-center justify-center shrink-0">
+                  P3
+                </span>
+<div>
+<div class="flex items-center gap-2 flex-wrap">
+<h3 class="font-bold text-sm text-slate-900">Gym</h3>
+<span class="text-xs text-slate-500 font-normal flex items-center gap-1">
+<svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<circle cx="12" cy="12" r="10" stroke-width="2"></circle>
+<polyline points="12 6 12 12 16 14" stroke-width="2"></polyline>
+</svg>
+                      6:30 PM – 7:15 PM (45 min)
+                    </span>
+<span class="px-2 py-0.5 text-[11px] font-semibold bg-emerald-50 text-emerald-600 border border-emerald-100 rounded-md">Health</span>
+</div>
+<p class="text-xs text-slate-500 mt-0.5">Workout session.</p>
+</div>
+</div>
+<div class="flex items-center justify-between md:justify-end gap-3 text-xs border-t md:border-t-0 pt-2 md:pt-0 border-slate-100">
+<div class="text-left text-[11px] bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-100 min-w-[190px]">
+<span class="font-bold text-amber-600">Why P3?</span>
+<ul class="text-slate-600 space-y-0.5 mt-0.5">
+<li class="list-disc list-inside">Important for consistency</li>
+<li class="list-disc list-inside">Supports energy &amp; focus</li>
+</ul>
+</div>
+<svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</div>
+</div>
+<!-- Task Item 4: P4 Check GitHub Issue -->
+<div class="bg-white border border-slate-200 rounded-xl p-3 flex flex-col md:flex-row md:items-center justify-between gap-3 shadow-sm hover:border-slate-300 transition-colors">
+<div class="flex items-start gap-3">
+<span class="w-7 h-7 rounded-full bg-emerald-600 text-white font-bold text-xs flex items-center justify-center shrink-0">
+                  P4
+                </span>
+<div>
+<div class="flex items-center gap-2 flex-wrap">
+<h3 class="font-bold text-sm text-slate-900">Check GitHub Issue</h3>
+<span class="text-xs text-slate-500 font-normal flex items-center gap-1">
+<svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<circle cx="12" cy="12" r="10" stroke-width="2"></circle>
+<polyline points="12 6 12 12 16 14" stroke-width="2"></polyline>
+</svg>
+                      9:00 PM – 9:30 PM (30 min)
+                    </span>
+<span class="px-2 py-0.5 text-[11px] font-semibold bg-slate-100 text-slate-600 border border-slate-200 rounded-md">Admin</span>
+</div>
+<p class="text-xs text-slate-500 mt-0.5">Review and respond.</p>
+</div>
+</div>
+<div class="flex items-center justify-between md:justify-end gap-3 text-xs border-t md:border-t-0 pt-2 md:pt-0 border-slate-100">
+<div class="text-left text-[11px] bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-100 min-w-[190px]">
+<span class="font-bold text-emerald-600">Why P4?</span>
+<ul class="text-slate-600 space-y-0.5 mt-0.5">
+<li class="list-disc list-inside">Low urgency</li>
+<li class="list-disc list-inside">Quick task</li>
+</ul>
+</div>
+<svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</div>
+</div>
+<!-- Task Item 5: P4 Revise Python -->
+<div class="bg-white border border-slate-200 rounded-xl p-3 flex flex-col md:flex-row md:items-center justify-between gap-3 shadow-sm hover:border-slate-300 transition-colors">
+<div class="flex items-start gap-3">
+<span class="w-7 h-7 rounded-full bg-emerald-600 text-white font-bold text-xs flex items-center justify-center shrink-0">
+                  P4
+                </span>
+<div>
+<div class="flex items-center gap-2 flex-wrap">
+<h3 class="font-bold text-sm text-slate-900">Revise Python</h3>
+<span class="text-xs text-slate-500 font-normal flex items-center gap-1">
+<svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<circle cx="12" cy="12" r="10" stroke-width="2"></circle>
+<polyline points="12 6 12 12 16 14" stroke-width="2"></polyline>
+</svg>
+                      9:30 PM – 10:00 PM (30 min)
+                    </span>
+<span class="px-2 py-0.5 text-[11px] font-semibold bg-purple-50 text-purple-600 border border-purple-100 rounded-md">Learning</span>
+</div>
+<p class="text-xs text-slate-500 mt-0.5">If time allows.</p>
+</div>
+</div>
+<div class="flex items-center justify-between md:justify-end gap-3 text-xs border-t md:border-t-0 pt-2 md:pt-0 border-slate-100">
+<div class="text-left text-[11px] bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-100 min-w-[190px]">
+<span class="font-bold text-emerald-600">Why P4?</span>
+<ul class="text-slate-600 space-y-0.5 mt-0.5">
+<li class="list-disc list-inside">Optional</li>
+<li class="list-disc list-inside">Good for long-term growth</li>
+</ul>
+</div>
+<svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</div>
+</div>
+</div>
+</section>
+<!-- END: OtherTasksSection -->
+<!-- BEGIN: ReviewAndFeasibilityGrid -->
+<section class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6" data-purpose="schedule-and-checks-grid">
+<!-- Col 1: Proposed Schedule -->
+<div class="bg-white border border-slate-200 rounded-xl p-4 shadow-sm text-xs">
+<div class="flex items-center gap-1.5 font-bold text-slate-900 mb-3 text-sm">
+<svg class="w-4 h-4 text-indigo-600" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<rect height="18" rx="2" width="18" x="3" y="4"></rect>
+<line x1="16" x2="16" y1="2" y2="6"></line>
+<line x1="8" x2="8" y1="2" y2="6"></line>
+<line x1="3" x2="21" y1="10" y2="10"></line>
+</svg>
+              Proposed Schedule
+            </div>
+<!-- Timeline items -->
+<div class="space-y-1.5 text-slate-600">
+<div class="flex items-center justify-between">
+<span class="text-slate-400 font-mono text-[11px]">4:00 PM</span>
+<span class="font-medium text-slate-700 flex items-center gap-1.5">
+<span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span> College (Fixed)
+                </span>
+</div>
+<div class="flex items-center justify-between">
+<span class="text-slate-400 font-mono text-[11px]">4:30 PM</span>
+<span class="font-medium text-slate-800 flex items-center gap-1.5">
+<span class="w-1.5 h-1.5 rounded-full bg-red-500"></span> EDC Revision (P1)
+                </span>
+</div>
+<div class="flex items-center justify-between">
+<span class="text-slate-400 font-mono text-[11px]">6:00 PM</span>
+<span class="text-slate-500 flex items-center gap-1.5">
+<span class="w-1.5 h-1.5 rounded-full bg-slate-300"></span> Break (15 min)
+                </span>
+</div>
+<div class="flex items-center justify-between">
+<span class="text-slate-400 font-mono text-[11px]">6:30 PM</span>
+<span class="font-medium text-slate-800 flex items-center gap-1.5">
+<span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span> Gym (P3)
+                </span>
+</div>
+<div class="flex items-center justify-between">
+<span class="text-slate-400 font-mono text-[11px]">7:30 PM</span>
+<span class="font-medium text-slate-800 flex items-center gap-1.5">
+<span class="w-1.5 h-1.5 rounded-full bg-orange-500"></span> TRAKAE Parser (P2)
+                </span>
+</div>
+<div class="flex items-center justify-between">
+<span class="text-slate-400 font-mono text-[11px]">9:00 PM</span>
+<span class="font-medium text-slate-800 flex items-center gap-1.5">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Check GitHub (P4)
+                </span>
+</div>
+<div class="flex items-center justify-between">
+<span class="text-slate-400 font-mono text-[11px]">9:30 PM</span>
+<span class="font-medium text-slate-800 flex items-center gap-1.5">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Revise Python (P4)
+                </span>
+</div>
+<div class="flex items-center justify-between">
+<span class="text-slate-400 font-mono text-[11px]">10:00 PM</span>
+<span class="text-slate-500 flex items-center gap-1.5">
+<span class="w-1.5 h-1.5 rounded-full bg-slate-300"></span> Buffer / Wrap up
+                </span>
+</div>
+</div>
+</div>
+<!-- Col 2: Feasibility Check -->
+<div class="bg-white border border-slate-200 rounded-xl p-4 shadow-sm flex flex-col justify-between text-xs">
+<div>
+<div class="flex items-center gap-1.5 font-bold text-slate-900 mb-1 text-sm">
+<!-- Green check shield -->
+<svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" stroke-width="2.5" viewbox="0 0 24 24">
+<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+<path d="M9 12l2 2 4-4"></path>
+</svg>
+                Feasibility Check
+              </div>
+<p class="font-semibold text-slate-800 text-xs mt-2">Looks good!</p>
+<p class="text-slate-500 text-[11px] leading-relaxed">All tasks fit within your available time.</p>
+</div>
+<!-- Time Stats & Progress Bar -->
+<div class="mt-4 pt-3 border-t border-slate-100">
+<div class="flex justify-between items-center text-xs mb-1">
+<div>
+<span class="text-slate-400 block text-[10px]">Total planned time</span>
+<span class="font-bold text-slate-900 text-sm">3h 30m</span>
+</div>
+<div class="text-right">
+<span class="text-slate-400 block text-[10px]">Available time</span>
+<span class="font-bold text-slate-900 text-sm">6h 00m</span>
+</div>
+</div>
+<!-- Progress Bar -->
+<div class="w-full bg-slate-100 rounded-full h-2.5 mt-2 overflow-hidden relative">
+<div class="bg-emerald-500 h-2.5 rounded-full" style="width: 58%"></div>
+</div>
+<div class="text-right text-[10px] text-slate-400 mt-1">58% used</div>
+</div>
+</div>
+<!-- Col 3: Watch Outs & Guardrails -->
+<div class="bg-white border border-slate-200 rounded-xl p-4 shadow-sm space-y-4 text-xs">
+<!-- Things to Watch -->
+<div>
+<div class="flex items-center gap-1.5 font-bold text-slate-900 mb-1">
+<!-- Red triangle warning icon -->
+<svg class="w-4 h-4 text-red-500" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+<line x1="12" x2="12" y1="9" y2="13"></line>
+<line x1="12" x2="12.01" y1="17" y2="17"></line>
+</svg>
+                Things to Watch
+              </div>
+<p class="text-slate-600 text-[11px] leading-relaxed pl-5">
+                No major issues.<br/>
+                You have a buffer of 2h 30m.
+              </p>
+</div>
+<!-- Do Not Waste Time On -->
+<div class="border-t border-slate-100 pt-3">
+<div class="flex items-center gap-1.5 font-bold text-slate-900 mb-1.5">
+<!-- Slashed Circle Icon -->
+<svg class="w-4 h-4 text-red-500" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<circle cx="12" cy="12" r="10"></circle>
+<line x1="4.93" x2="19.07" y1="4.93" y2="19.07"></line>
+</svg>
+                Do Not Waste Time On
+              </div>
+<ul class="text-[11px] text-slate-600 space-y-1 pl-5 list-disc">
+<li>Unnecessary social media</li>
+<li>Random browsing</li>
+<li>Non-urgent low-value tasks</li>
+</ul>
+</div>
+</div>
+</section>
+<!-- END: ReviewAndFeasibilityGrid -->
+</div>
+<!-- BEGIN: BottomStickyFixBar -->
+<footer class="mt-4 pb-2" data-purpose="fix-plan-action">
+<button class="w-full bg-[#4F46E5] hover:bg-[#4338CA] active:bg-[#3730A3] text-white py-3.5 px-6 rounded-xl font-bold flex items-center justify-between shadow-lg shadow-indigo-200 transition-all group">
+<div class="w-6"></div> <!-- Spacer for centering -->
+<div class="flex flex-col items-center">
+<span class="flex items-center gap-2 text-base tracking-wide uppercase">
+<svg class="w-5 h-5 stroke-[2.5]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<polyline points="20 6 9 17 4 12"></polyline>
+</svg>
+              FIX PLAN
+            </span>
+<span class="text-[11px] font-normal text-indigo-100">Lock this plan and create your schedule</span>
+</div>
+<svg class="w-5 h-5 text-white/80 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" viewbox="0 0 24 24">
+<line x1="5" x2="19" y1="12" y2="12"></line>
+<polyline points="12 5 19 12 12 19"></polyline>
+</svg>
+</button>
+</footer>
+<!-- END: BottomStickyFixBar -->
+</main>
+<!-- END: MainContent -->
+</div>
+</body></html>

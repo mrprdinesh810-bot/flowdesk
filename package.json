@@ -1,0 +1,24 @@
+{
+  "name": "flowdesk-workspace",
+  "version": "1.0.0",
+  "private": true,
+  "description": "FlowDesk - Local-first personalized AI daily productivity and execution system",
+  "workspaces": [
+    "apps/*"
+  ],
+  "scripts": {
+    "dev:server": "npm --workspace=apps/server run dev",
+    "dev:web": "npm --workspace=apps/web run dev",
+    "build": "npm --workspace=apps/server run build && npm --workspace=apps/web run build",
+    "test:server": "npm --workspace=apps/server run test",
+    "test": "npm run test:server"
+  },
+  "keywords": [
+    "flowdesk",
+    "productivity",
+    "local-first",
+    "ai-assisted"
+  ],
+  "author": "",
+  "license": "MIT"
+}

@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>FlowDesk - AI Processing &amp; Clarification</title>
+<!-- Tailwind CSS v3 with Plugins -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Google Fonts: Inter -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              50: '#EEF2FF',
+              100: '#E0E7FF',
+              500: '#6366F1',
+              600: '#4F46E5',
+              700: '#4338CA',
+            },
+            surface: '#F8F9FA',
+            borderLight: '#E5E7EB',
+          }
+        }
+      }
+    }
+  </script>
+<!-- BEGIN: Custom CSS -->
+<style data-purpose="custom-enhancements">
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: #F8F9FA;
+      color: #111827;
+    }
+    /* Subtle spinner rotation animation */
+    @keyframes spin-slow {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    .animate-spin-custom {
+      animation: spin-slow 1.5s linear infinite;
+    }
+  </style>
+<!-- END: Custom CSS -->
+</head>
+<body class="min-h-screen bg-[#F8F9FA] text-[#191C21] antialiased flex flex-col justify-between">
+<!-- BEGIN: LayoutWrapper -->
+<div class="flex min-h-screen w-full">
+<!-- BEGIN: LeftSidebar -->
+<aside class="w-64 bg-white border-r border-[#E5E7EB] flex flex-col justify-between p-5 shrink-0 select-none">
+<div class="space-y-6">
+<!-- Logo -->
+<div class="flex items-center gap-2.5 px-2">
+<div class="w-8 h-8 rounded-lg bg-[#4F46E5] flex items-center justify-center text-white shadow-sm">
+<svg class="w-5 h-5 fill-current" viewbox="0 0 24 24">
+<path d="M4 5a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V5zm0 7a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-2zm0 7a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-2z"></path>
+</svg>
+</div>
+<span class="text-lg font-bold tracking-tight text-[#111827]">FlowDesk</span>
+</div>
+<!-- Navigation Menu -->
+<nav class="space-y-1 text-sm font-medium" data-purpose="sidebar-nav">
+<a class="flex items-center gap-3 px-3 py-2.5 text-[#4B5563] hover:bg-gray-50 hover:text-gray-900 rounded-lg transition-colors" href="#">
+<svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"></path>
+</svg>
+<span>Today</span>
+</a>
+<!-- Active navigation item: Brain Dump -->
+<a class="flex items-center gap-3 px-3 py-2.5 bg-[#EEF2FF] text-[#4F46E5] font-semibold rounded-lg" href="#">
+<svg class="w-5 h-5 text-[#4F46E5]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+<span>Brain Dump</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 text-[#4B5563] hover:bg-gray-50 hover:text-gray-900 rounded-lg transition-colors" href="#">
+<svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"></path>
+</svg>
+<span>Tasks</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 text-[#4B5563] hover:bg-gray-50 hover:text-gray-900 rounded-lg transition-colors" href="#">
+<svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"></path>
+</svg>
+<span>Analytics</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 text-[#4B5563] hover:bg-gray-50 hover:text-gray-900 rounded-lg transition-colors" href="#">
+<svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"></path>
+<path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"></path>
+</svg>
+<span>Settings</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 text-[#4B5563] hover:bg-gray-50 hover:text-gray-900 rounded-lg transition-colors" href="#">
+<svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"></path>
+</svg>
+<span>Backup</span>
+</a>
+</nav>
+</div>
+<!-- Bottom Status & Profile Area -->
+<div class="space-y-4">
+<!-- AI Provider Status Pill -->
+<div class="border border-[#E5E7EB] rounded-xl p-3.5 bg-white shadow-sm" data-purpose="ai-status-card">
+<div class="text-[11px] text-[#6B7280] font-medium uppercase tracking-wider mb-1">AI Provider</div>
+<div class="flex items-center gap-1.5 text-xs font-semibold text-[#111827]">
+<span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+            Ollama
+          </div>
+<div class="text-[11px] text-[#6B7280] mt-1">
+            Model: <span class="font-medium text-[#374151]">qwen3.5:9b</span>
+</div>
+</div>
+<!-- User Profile Pill -->
+<div class="flex items-center justify-between pt-2 border-t border-gray-100" data-purpose="user-profile-pill">
+<div class="flex items-center gap-2.5">
+<div class="w-8 h-8 rounded-full bg-[#4F46E5] text-white flex items-center justify-center font-semibold text-xs shadow-sm">
+              D
+            </div>
+<span class="text-sm font-medium text-[#111827]">Dinesh</span>
+</div>
+<button class="text-gray-400 hover:text-gray-600 transition-colors">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M19 9l-7 7-7-7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</button>
+</div>
+</div>
+</aside>
+<!-- END: LeftSidebar -->
+<!-- BEGIN: MainContent -->
+<main class="flex-1 px-10 py-7 max-w-5xl overflow-y-auto">
+<!-- Top Navigation Row & Date/Time -->
+<div class="flex items-center justify-between mb-5 text-sm text-[#6B7280]" data-purpose="breadcrumbs-header">
+<a class="inline-flex items-center gap-1.5 font-medium text-[#4B5563] hover:text-[#111827] transition-colors" href="#">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M15 19l-7-7 7-7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+          Back to Brain Dump
+        </a>
+<div class="text-xs text-[#6B7280] font-medium tracking-wide">
+          Sun, 31 Aug 2026  •  4:45 PM
+        </div>
+</div>
+<!-- Main Heading Area -->
+<div class="mb-6">
+<h1 class="text-2xl font-bold text-[#111827] tracking-tight">Understanding your day...</h1>
+<p class="text-sm text-[#4B5563] mt-0.5">FlowDesk is analyzing your input and extracting tasks.</p>
+</div>
+<!-- BEGIN: ProgressAndIllustrationSection -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-5 mb-5" data-purpose="status-overview-grid">
+<!-- Progress Steps Card (2 cols span) -->
+<div class="md:col-span-2 bg-white border border-[#E5E7EB] rounded-2xl p-6 shadow-sm flex flex-col justify-between">
+<div class="relative space-y-6">
+<!-- Vertical continuous line -->
+<div class="absolute left-4 top-4 bottom-4 w-0.5 bg-[#E5E7EB] -z-0"></div>
+<!-- Step 1: Finished -->
+<div class="relative z-10 flex items-start gap-4">
+<div class="w-8 h-8 rounded-full bg-emerald-600 text-white flex items-center justify-center shrink-0 shadow-sm ring-4 ring-white">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewbox="0 0 24 24">
+<path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</div>
+<div class="pt-0.5">
+<div class="text-sm font-semibold text-[#111827]">Reading your brain dump</div>
+<div class="text-xs text-[#6B7280] mt-0.5">Processing your input...</div>
+</div>
+</div>
+<!-- Step 2: Finished -->
+<div class="relative z-10 flex items-start gap-4">
+<div class="w-8 h-8 rounded-full bg-emerald-600 text-white flex items-center justify-center shrink-0 shadow-sm ring-4 ring-white">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewbox="0 0 24 24">
+<path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</div>
+<div class="pt-0.5">
+<div class="text-sm font-semibold text-[#111827]">Finding tasks</div>
+<div class="text-xs text-[#6B7280] mt-0.5">Identifying activities, time hints, and deadlines...</div>
+</div>
+</div>
+<!-- Step 3: In Progress (Active) -->
+<div class="relative z-10 flex items-start justify-between">
+<div class="flex items-start gap-4">
+<div class="w-8 h-8 rounded-full bg-[#4F46E5] text-white flex items-center justify-center font-bold text-xs shrink-0 shadow-sm ring-4 ring-white">
+                  3
+                </div>
+<div class="pt-0.5">
+<div class="text-sm font-semibold text-[#111827]">Checking priorities</div>
+<div class="text-xs text-[#6B7280] mt-0.5">Determining what matters most...</div>
+</div>
+</div>
+<!-- Small spinner icon -->
+<div class="mt-1">
+<svg class="w-5 h-5 text-[#4F46E5] animate-spin-custom" fill="none" viewbox="0 0 24 24">
+<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3"></circle>
+<path class="opacity-75" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" fill="currentColor"></path>
+</svg>
+</div>
+</div>
+<!-- Step 4: Pending -->
+<div class="relative z-10 flex items-start gap-4">
+<div class="w-8 h-8 rounded-full bg-[#E5E7EB] text-[#6B7280] flex items-center justify-center font-medium text-xs shrink-0 ring-4 ring-white">
+                4
+              </div>
+<div class="pt-0.5">
+<div class="text-sm font-medium text-[#6B7280]">Building schedule</div>
+<div class="text-xs text-[#9CA3AF] mt-0.5">Creating a realistic plan...</div>
+</div>
+</div>
+</div>
+</div>
+<!-- AI Visual Card (1 col span) -->
+<div class="bg-gradient-to-b from-[#F3F4FD] to-[#FFFFFF] border border-[#E5E7EB] rounded-2xl p-6 flex flex-col justify-between items-center text-center shadow-sm" data-purpose="ai-illustration-card">
+<!-- Stylized Robot Vector/Avatar -->
+<div class="my-auto py-2 flex flex-col items-center">
+<div class="relative w-24 h-24 flex items-center justify-center">
+<div class="absolute inset-0 bg-[#E0E7FF] rounded-full blur-lg opacity-60"></div>
+<!-- SVG Cute AI Robot -->
+<svg class="w-20 h-20 relative z-10 drop-shadow-md" fill="none" viewbox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+<!-- Antenna -->
+<line stroke="#4F46E5" stroke-linecap="round" stroke-width="4" x1="50" x2="50" y1="14" y2="24"></line>
+<circle cx="50" cy="12" fill="#6366F1" r="4"></circle>
+<!-- Ears -->
+<rect fill="#A5B4FC" height="14" rx="4" width="8" x="14" y="44"></rect>
+<rect fill="#A5B4FC" height="14" rx="4" width="8" x="78" y="44"></rect>
+<!-- Robot Head -->
+<rect fill="#FFFFFF" height="52" rx="22" stroke="#6366F1" stroke-width="3" width="60" x="20" y="24"></rect>
+<!-- Face Screen -->
+<rect fill="#4F46E5" height="36" rx="14" width="48" x="26" y="32"></rect>
+<!-- Eyes -->
+<ellipse cx="39" cy="49" fill="#FFFFFF" rx="4.5" ry="6"></ellipse>
+<ellipse cx="61" cy="49" fill="#FFFFFF" rx="4.5" ry="6"></ellipse>
+<!-- Blushing Cheek accents -->
+<ellipse cx="32" cy="57" fill="#818CF8" rx="2.5" ry="1.5"></ellipse>
+<ellipse cx="68" cy="57" fill="#818CF8" rx="2.5" ry="1.5"></ellipse>
+</svg>
+</div>
+<p class="text-xs font-medium text-[#374151] mt-3 px-2 leading-relaxed">
+              Turning your thoughts into a clear, organized plan.
+            </p>
+</div>
+<!-- Card Bottom Provider Badge -->
+<div class="w-full pt-3 border-t border-gray-100 text-left">
+<div class="text-[10px] text-[#9CA3AF] uppercase font-bold tracking-wider mb-1">AI Provider</div>
+<div class="flex items-center gap-1.5 text-xs font-semibold text-[#1F2937]">
+<span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+              Ollama
+            </div>
+<div class="text-[11px] text-[#6B7280] mt-0.5">
+              Model: <span class="font-medium text-[#111827]">qwen3.5:9b</span>
+</div>
+</div>
+</div>
+</div>
+<!-- END: ProgressAndIllustrationSection -->
+<!-- BEGIN: ClarificationSection -->
+<section class="bg-white border border-[#E5E7EB] rounded-2xl p-6 shadow-sm mb-5" data-purpose="clarification-task-card">
+<!-- Header Banner with Count and Pagination -->
+<div class="flex items-center justify-between pb-4 border-b border-gray-100">
+<div class="flex items-center gap-3">
+<div class="w-6 h-6 rounded-full bg-emerald-600 text-white flex items-center justify-center shadow-sm">
+<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewbox="0 0 24 24">
+<path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</div>
+<div>
+<h2 class="text-sm font-semibold text-[#111827]">I found 6 tasks from your input</h2>
+<p class="text-xs text-[#6B7280]">Let me confirm a few details to make the plan more accurate.</p>
+</div>
+</div>
+<!-- Pagination Control -->
+<div class="flex items-center gap-2 text-xs font-medium text-[#6B7280]">
+<button class="w-6 h-6 rounded border border-gray-200 flex items-center justify-center hover:bg-gray-50 text-gray-400">
+<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M15 19l-7-7 7-7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</button>
+<span class="text-xs text-[#374151]">1 of 2</span>
+<button class="w-6 h-6 rounded border border-gray-200 flex items-center justify-center hover:bg-gray-50 text-gray-700">
+<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</button>
+</div>
+</div>
+<!-- Question & Options Block -->
+<div class="pt-5 space-y-4">
+<!-- Pill Tag -->
+<div class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-[#FEF3C7] text-[#92400E]">
+            Clarification needed
+          </div>
+<!-- Specific Question -->
+<div>
+<h3 class="text-sm font-semibold text-[#111827]">How much time do you want to spend on EDC revision?</h3>
+<p class="text-xs text-[#6B7280] mt-0.5">You mentioned "study edc for 2 hours". Should I plan for 2 hours?</p>
+</div>
+<!-- Radio Pill Options (2x2 Grid) -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-3 pt-1">
+<!-- Option 1: Selected state -->
+<label class="relative flex items-center gap-3 px-4 py-3 rounded-xl border-2 border-[#4F46E5] bg-[#F5F7FF] cursor-pointer text-xs font-medium text-[#4F46E5] transition-all shadow-sm">
+<div class="w-4 h-4 rounded-full border-2 border-[#4F46E5] flex items-center justify-center bg-[#4F46E5] text-white">
+<svg class="w-2.5 h-2.5 fill-current" viewbox="0 0 20 20">
+<path clip-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" fill-rule="evenodd"></path>
+</svg>
+</div>
+<span class="font-semibold">2 hours (recommended)</span>
+<input checked="" class="sr-only" name="edc_duration" type="radio"/>
+</label>
+<!-- Option 2 -->
+<label class="relative flex items-center gap-3 px-4 py-3 rounded-xl border border-[#E5E7EB] bg-white hover:bg-gray-50 cursor-pointer text-xs font-medium text-[#374151] transition-all">
+<div class="w-4 h-4 rounded-full border border-gray-300"></div>
+<span>1 hour (quick revision)</span>
+<input class="sr-only" name="edc_duration" type="radio"/>
+</label>
+<!-- Option 3 -->
+<label class="relative flex items-center gap-3 px-4 py-3 rounded-xl border border-[#E5E7EB] bg-white hover:bg-gray-50 cursor-pointer text-xs font-medium text-[#374151] transition-all">
+<div class="w-4 h-4 rounded-full border border-gray-300"></div>
+<span>More than 2 hours</span>
+<input class="sr-only" name="edc_duration" type="radio"/>
+</label>
+<!-- Option 4 -->
+<label class="relative flex items-center gap-3 px-4 py-3 rounded-xl border border-[#E5E7EB] bg-white hover:bg-gray-50 cursor-pointer text-xs font-medium text-[#374151] transition-all">
+<div class="w-4 h-4 rounded-full border border-gray-300"></div>
+<span>I'll decide later</span>
+<input class="sr-only" name="edc_duration" type="radio"/>
+</label>
+</div>
+<!-- Notes Textarea -->
+<div class="pt-2">
+<textarea class="w-full rounded-xl border border-[#E5E7EB] px-3.5 py-2.5 text-xs text-[#111827] placeholder-gray-400 focus:border-[#4F46E5] focus:ring-1 focus:ring-[#4F46E5] outline-none transition" placeholder="Add any specific topic or notes (optional)..." rows="2"></textarea>
+</div>
+<!-- Actions Footer Buttons -->
+<div class="flex items-center justify-between pt-3">
+<button class="px-4 py-2 border border-[#E5E7EB] text-xs font-medium text-[#4B5563] hover:bg-gray-50 rounded-lg transition-colors" type="button">
+              Skip for now
+            </button>
+<button class="inline-flex items-center gap-2 px-5 py-2 bg-[#4F46E5] text-xs font-semibold text-white rounded-lg hover:bg-[#4338CA] transition-colors shadow-sm" type="button">
+<span>Continue</span>
+<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M14 5l7 7m0 0l-7 7m7-7H3" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</button>
+</div>
+</div>
+</section>
+<!-- END: ClarificationSection -->
+<!-- BEGIN: ReassuranceSummarySection -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-5" data-purpose="reassurance-grid">
+<!-- Understood So Far Card -->
+<div class="bg-white border border-[#E5E7EB] rounded-2xl p-5 shadow-sm">
+<div class="flex items-center gap-2 mb-3">
+<div class="text-amber-500">
+<svg class="w-4 h-4 fill-current" viewbox="0 0 20 20">
+<path d="M11 3a1 1 0 10-2 0v1a1 1 0 102 0V3zM15.657 5.757a1 1 0 00-1.414-1.414l-.707.707a1 1 0 001.414 1.414l.707-.707zM18 10a1 1 0 01-1 1h-1a1 1 0 110-2h1a1 1 0 011 1zM5.05 6.464A1 1 0 106.464 5.05l-.707-.707a1 1 0 00-1.414 1.414l.707.707zM5 10a1 1 0 01-1 1H3a1 1 0 110-2h1a1 1 0 011 1zM8 16v-1h4v1a2 2 0 11-4 0zM12 14H8a4 4 0 01-2.42-3.19C5.23 9.49 6.2 8 8 8h4c1.8 0 2.77 1.49 2.42 2.81A4 4 0 0112 14z"></path>
+</svg>
+</div>
+<h3 class="text-xs font-semibold text-[#111827]">What I understood so far</h3>
+</div>
+<ul class="space-y-2 text-xs text-[#4B5563] pl-1">
+<li class="flex items-center gap-2">
+<span class="w-1.5 h-1.5 rounded-full bg-gray-400"></span>
+<span>College until 4:00 PM (fixed)</span>
+</li>
+<li class="flex items-center gap-2">
+<span class="w-1.5 h-1.5 rounded-full bg-gray-400"></span>
+<span>EDC revision (around 2 hours)</span>
+</li>
+<li class="flex items-center gap-2">
+<span class="w-1.5 h-1.5 rounded-full bg-gray-400"></span>
+<span>Finish TRAKAE parser</span>
+</li>
+<li class="flex items-center gap-2">
+<span class="w-1.5 h-1.5 rounded-full bg-gray-400"></span>
+<span>Gym at 6:30 PM</span>
+</li>
+<li class="flex items-center gap-2">
+<span class="w-1.5 h-1.5 rounded-full bg-gray-400"></span>
+<span>Check GitHub issue</span>
+</li>
+<li class="flex items-center gap-2">
+<span class="w-1.5 h-1.5 rounded-full bg-gray-400"></span>
+<span>Revise Python (if time allows)</span>
+</li>
+</ul>
+</div>
+<!-- I'll Handle The Rest Card -->
+<div class="bg-white border border-[#E5E7EB] rounded-2xl p-5 shadow-sm">
+<div class="flex items-center gap-2 mb-3">
+<div class="text-[#4F46E5]">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</div>
+<h3 class="text-xs font-semibold text-[#111827]">I'll handle the rest</h3>
+</div>
+<ul class="space-y-2 text-xs text-[#4B5563]">
+<li class="flex items-center gap-2 text-emerald-600">
+<svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewbox="0 0 24 24">
+<path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="text-[#374151]">Identify priorities (P1, P2, P3, P4)</span>
+</li>
+<li class="flex items-center gap-2 text-emerald-600">
+<svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewbox="0 0 24 24">
+<path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="text-[#374151]">Estimate time for each task</span>
+</li>
+<li class="flex items-center gap-2 text-emerald-600">
+<svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewbox="0 0 24 24">
+<path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="text-[#374151]">Check your available time</span>
+</li>
+<li class="flex items-center gap-2 text-emerald-600">
+<svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewbox="0 0 24 24">
+<path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="text-[#374151]">Build a practical schedule</span>
+</li>
+<li class="flex items-center gap-2 text-emerald-600">
+<svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewbox="0 0 24 24">
+<path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="text-[#374151]">Highlight any conflicts</span>
+</li>
+<li class="flex items-center gap-2 text-emerald-600">
+<svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewbox="0 0 24 24">
+<path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="text-[#374151]">Suggest what can be moved</span>
+</li>
+</ul>
+</div>
+</div>
+<!-- END: ReassuranceSummarySection -->
+</main>
+<!-- END: MainContent -->
+</div>
+<!-- END: LayoutWrapper -->
+</body></html>
